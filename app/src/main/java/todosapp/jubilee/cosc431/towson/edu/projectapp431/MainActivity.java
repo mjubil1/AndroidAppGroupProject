@@ -3,6 +3,8 @@ package todosapp.jubilee.cosc431.towson.edu.projectapp431;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -13,8 +15,13 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import java.util.ArrayList;
+
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
+
+    private RecyclerView recyclerView;
+    ArrayList<Expense> expenseList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,6 +47,17 @@ public class MainActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+        getIntent();
+        recyclerView = (RecyclerView) findViewById(R.id.recyclerView);
+        expenseList = new ArrayList<>();
+
+        //1. Instantiate adapter
+        ExpenseAdapter adapter = new ExpenseAdapter(expenseList);
+        //2. Set the adapter on the recyclerView
+        recyclerView.setAdapter(adapter);
+        //3. Set the layout manager
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
     }
 
     @Override
