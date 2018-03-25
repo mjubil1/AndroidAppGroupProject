@@ -5,4 +5,14 @@
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
     <string name="action_settings">Settings</string>
+
+    <string-array name="category_array">
+        <item>Groceries</item>
+        <item>Gas</item>
+        <item>Eating Out</item>
+        <item>Entertainment</item>
+        <item>Shopping</item>
+        <item>Personal Care</item>
+        <item>Miscellaneous</item>
+    </string-array>
 </resources>
