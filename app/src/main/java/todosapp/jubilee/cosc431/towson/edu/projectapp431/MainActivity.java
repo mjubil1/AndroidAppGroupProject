@@ -1,5 +1,6 @@
 package todosapp.jubilee.cosc431.towson.edu.projectapp431;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -20,6 +21,7 @@ import java.util.ArrayList;
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
+    private static final int ADD_EXPENSE_CODE = 100;
     private RecyclerView recyclerView;
     ArrayList<Expense> expenseList;
 
@@ -34,8 +36,8 @@ public class MainActivity extends AppCompatActivity
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+                Intent intent = new Intent(view.getContext(), NewExpenseActivity.class);
+                startActivityForResult(intent, ADD_EXPENSE_CODE);
             }
         });
 
@@ -115,5 +117,30 @@ public class MainActivity extends AppCompatActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    protected void onActivityResult(int requestCode, int resultCode, Intent data){
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == ADD_EXPENSE_CODE){
+            if (resultCode == RESULT_OK){
+                //handle expense
+                String nameTxt = data.getStringExtra(NewExpenseActivity.EXPENSE_NAME_KEY);
+                String amountTxt = "$" + data.getStringExtra(NewExpenseActivity.EXPENSE_AMOUNT_KEY);
+                String categoryTxt = data.getStringExtra(NewExpenseActivity.EXPENSE_CATEGORY_KEY);
+                String dateTxt = data.getStringExtra(NewExpenseActivity.EXPENSE_DATE_KEY);
+
+                //make expense object
+                Expense expense = new Expense(nameTxt,categoryTxt,amountTxt,dateTxt);
+
+                //add expense to list
+                expenseList.add(expense);
+
+                ExpenseAdapter expenseAdapter = new ExpenseAdapter(expenseList);
+                recyclerView.setAdapter(expenseAdapter);
+                expenseAdapter.notifyItemInserted(expenseList.size());
+
+                //todo: check expense for today's date and only display those with today's date
+            }
+        }
     }
 }
