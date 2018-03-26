@@ -16,8 +16,6 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
 
-import edu.towson.cosc431.jubilee.jubilee.projectapp431.R;
-
 /**
  * Created by Rachael on 3/24/2018.
  */
@@ -40,7 +38,7 @@ public class NewExpenseActivity extends AppCompatActivity implements AdapterView
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_expense);
 
-        expenseNameEt = findViewById(R.id.expenseNameEt);
+        expenseNameEt =  findViewById(R.id.expenseNameEt);
         expenseAmountEt = findViewById(R.id.expenseAmountEt);
         categorySpinner = findViewById(R.id.categorySpinner);
         expenseDateEt = findViewById(R.id.expenseDateEt);
