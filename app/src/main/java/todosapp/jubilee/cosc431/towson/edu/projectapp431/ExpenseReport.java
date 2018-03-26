@@ -8,6 +8,12 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RadioButton;
 
+import java.lang.reflect.Array;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+
 
 public class ExpenseReport extends AppCompatActivity implements View.OnClickListener {
 
@@ -15,6 +21,7 @@ public class ExpenseReport extends AppCompatActivity implements View.OnClickList
         private RadioButton weekly, monthly, yearly;
         private Button menu;
         private EditText et[];
+        private double catamount=0;
         @Override
         protected void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
@@ -43,15 +50,123 @@ public class ExpenseReport extends AppCompatActivity implements View.OnClickList
             //et[0].isInEditMode(); is it editable?
             calculate();
         }
-        private void calculate(){
+        private ArrayList<Expense> converttoexpense(){
             Intent intent=this.getIntent();
+            ArrayList<String> category=intent.getStringArrayListExtra("category");
+            ArrayList<String> name=intent.getStringArrayListExtra("name");
+            ArrayList<String> amount=intent.getStringArrayListExtra("amount");
+            ArrayList<String> date=intent.getStringArrayListExtra("date");
+            ArrayList <Expense> exp=new ArrayList<Expense>();
+            int expenses=intent.getIntExtra("expenses",0);
+            for(int x=0;x<expenses;x++){
+                //String name, String category, String amount, String dateSpent
+                Expense e=new Expense(name.get(x),category.get(x),amount.get(x),date.get(x));
+                exp.add(e);
+            }
+            return exp;
+        }
+        private ArrayList<Expense> next(ArrayList<Expense> exp){
+        //find next category
+            String cat="";
+            ArrayList<String> categoriesused=new ArrayList<String>();
+        for(int x=0;x<exp.size();x++){
+
+            for(int y=0;y<categoriesused.size();y++){ if(!categoriesused.get(y).equals(exp.get(x).getCategory())){
+                cat= exp.get(x).getCategory();
+            }
+            }
+        }
+        if(cat.equals("")){
+            cat="!!!";
+        }
+            categoriesused.add(cat);
+        ArrayList<Expense> stuffreturning=new ArrayList<Expense>();
+        for(int x=0;x<exp.size();x++){
+            if(exp.get(x).getCategory().equals(cat)){
+                stuffreturning.add(exp.get(x));
+            }
+        }
+        return stuffreturning;
+    }
+
+        private void calculate(){
+            //converts from intent to expense
+            ArrayList<Expense> exp=converttoexpense();
+            //which textview is being used
+            int tvusing=-1;
+            boolean z=true;
+            while(z){
+            //finds all items for that category
+           ArrayList<Expense> cat=next(exp);
+           tvusing+=1;
+
+           if(cat.isEmpty()==true||tvusing>=7){
+               z=false;
+               return;
+           }
+
+           else{
 
 
+                //find specific time frame
+               cat=narrowtospecifictime(cat);
 
+               //find percentage
+               double percentage=findpercentage(exp, cat);
+               String text=cat.get(0).getCategory()+":\n";
+               text+="Percentage Spent: "+percentage+"\n";
+               text+="Amount Spent: "+catamount;
+               et[tvusing].setText(text);
+
+
+           }}
+        }
+        private ArrayList<Expense> narrowtospecifictime(ArrayList<Expense> cat){
+            ArrayList<Expense> time=new ArrayList<Expense>();
+            //get date
+
+            DateFormat df = new SimpleDateFormat("MM/dd/yy");
+            Date dateobj = new Date();
+            String date = df.format(dateobj);
+            String monthdate=date.substring(0,2);
+            String daydate=date.substring(3,5);
+            String yeardate=date.substring(6,8);
+            //convert to numbers
+            int month= Integer.parseInt(monthdate);
+            int year= Integer.parseInt(yeardate);
+            int day= Integer.parseInt(daydate);
+            for(int x=0;x<cat.size();x++){
+                int catmonth= Integer.parseInt(date.substring(0,2));
+                int catyear= Integer.parseInt(date.substring(6,8));
+                int catday= Integer.parseInt(date.substring(3,5));
+                if(permonth&&catmonth==month&&catyear==year){
+                    time.add(cat.get(x));
+                }
+                else if(peryear){
+                    if(year==catyear||catmonth>month&&catyear==year-1){
+                        time.add(cat.get(x));
+                    }
+                }
+                else if(perweek&&catyear==year){
+                    //add weeks code!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                   
+                }
+            }
 
         }
+        private double findpercentage( ArrayList<Expense> exp, ArrayList<Expense> cat){
+            double expamount=0;//amount spent
+            //exp
+            for(int x=0;x<exp.size();x++){
+                expamount+=Double.parseDouble(exp.get(x).getAmount());
+            }
+            //cat
+            for(int x=0;x<cat.size();x++){
+                catamount+=Double.parseDouble(cat.get(x).getAmount());
+            }
 
-
+            return catamount/expamount;
+        }
 
 
         @Override
@@ -83,7 +198,7 @@ public class ExpenseReport extends AppCompatActivity implements View.OnClickList
                 calculate();
             } else {
                 Intent intent1 = new Intent();
-                setResult(0, intent1);
+                setResult(50, intent1);
                 finish();
             }
         }
