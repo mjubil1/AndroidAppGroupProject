@@ -1,4 +1,4 @@
-package todosapp.jubilee.cosc431.towson.edu.projectapp431;
+package edu.towson.cosc431.jubilee.jubilee.projectapp431;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -17,6 +17,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import java.util.ArrayList;
+
+import edu.towson.cosc431.jubilee.jubilee.projectapp431.R;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -104,8 +106,8 @@ public class MainActivity extends AppCompatActivity
             // Handle the camera action
         } else if (id == R.id.nav_gallery) {
 
-        } else if (id == R.id.nav_slideshow) {
-
+        } else if (id == R.id.nav_editProfile) {
+            navigateToEditProfile();
         } else if (id == R.id.nav_manage) {
 
         } else if (id == R.id.nav_share) {
@@ -117,6 +119,10 @@ public class MainActivity extends AppCompatActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    public void navigateToEditProfile() {
+
     }
 
     protected void onActivityResult(int requestCode, int resultCode, Intent data){

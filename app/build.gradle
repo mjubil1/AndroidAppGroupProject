@@ -1,9 +1,8 @@
 apply plugin: 'com.android.application'
-
 android {
     compileSdkVersion 27
     defaultConfig {
-        applicationId "todosapp.jubilee.cosc431.towson.edu.projectapp431"
+        applicationId "edu.towson.cosc431.jubilee.jubilee.projectapp431"
         minSdkVersion 27
         targetSdkVersion 26
         versionCode 1

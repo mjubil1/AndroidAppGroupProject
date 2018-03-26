@@ -1,4 +1,4 @@
-package todosapp.jubilee.cosc431.towson.edu.projectapp431;
+package edu.towson.cosc431.jubilee.jubilee.projectapp431;
 
 import android.app.DatePickerDialog;
 import android.content.Intent;
@@ -15,6 +15,8 @@ import android.widget.Spinner;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
+
+import edu.towson.cosc431.jubilee.jubilee.projectapp431.R;
 
 /**
  * Created by Rachael on 3/24/2018.

@@ -1,4 +1,4 @@
-package todosapp.jubilee.cosc431.towson.edu.projectapp431;
+package edu.towson.cosc431.jubilee.jubilee.projectapp431;
 
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
@@ -7,6 +7,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RadioButton;
+
+import edu.towson.cosc431.jubilee.jubilee.projectapp431.R;
 
 
 public class ExpenseReport extends AppCompatActivity implements View.OnClickListener {

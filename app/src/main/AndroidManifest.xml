@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="todosapp.jubilee.cosc431.towson.edu.projectapp431">
+    package="edu.towson.cosc431.jubilee.jubilee.projectapp431">
 
     <application
         android:allowBackup="true"
@@ -19,8 +19,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".NewExpenseActivity"></activity>
-        <activity android:name=".ExpenseReport"></activity>
+        <activity android:name="edu.towson.cosc431.jubilee.jubilee.projectapp431.NewExpenseActivity"></activity>
+        <activity android:name="edu.towson.cosc431.jubilee.jubilee.projectapp431.ExpenseReport"></activity>
     </application>
 
 </manifest>

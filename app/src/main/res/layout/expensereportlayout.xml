@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="edu.towson.cosc431.allen.stuffforbigproject.MainActivity">
+    tools:context="edu.towson.cosc431.jubilee.jubilee.projectapp431.ExpenseReport">
 
     <TextView
         android:id="@+id/ExpenseReportTitle"
