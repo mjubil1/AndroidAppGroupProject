@@ -128,7 +128,30 @@ public class MainActivity extends AppCompatActivity
 
         int id = item.getItemId();
 
-        if(id == R.id.nav_editProfile) {
+        switch (id){
+            case R.id.nav_userProfile:
+                //Intent intent = new Intent(getApplicationContext(), EditProfile.class);
+                //startActivity(intent);
+
+                //class extends fragment, not AppCompatActivity so not declared in manifest
+                setContentView(R.layout.edit_profile);
+                break;
+            case R.id.nav_expenseReport:
+                //Intent intent = new Intent(getApplicationContext(), ExpenseReport.class);
+                //startActivity(intent);
+
+                //issue with radio button reference- probably needs radio group
+                setContentView(R.layout.expensereportlayout);
+                break;
+            case R.id.nav_savingsProfile:
+                Intent intent = new Intent(getApplicationContext(), SavingsProfile.class);
+                startActivity(intent);
+                break;
+            case R.id.nav_home:
+                setContentView(R.layout.activity_main);
+                break;
+        }
+        /*if(id == R.id.nav_userProfile) {
 
             Fragment fragment = new Fragment();
             FragmentTransaction ft= getSupportFragmentManager().beginTransaction();
@@ -136,8 +159,8 @@ public class MainActivity extends AppCompatActivity
             ft.commit();
         }
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        drawer.closeDrawer(GravityCompat.START);
+        /*DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        drawer.closeDrawer(GravityCompat.START);*/
         return true;
     }
 
