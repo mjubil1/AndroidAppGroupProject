@@ -21,6 +21,8 @@ import android.view.MenuItem;
 import java.util.ArrayList;
 
 import edu.towson.cosc431.jubilee.jubilee.projectapp431.R;
+import edu.towson.cosc431.jubilee.jubilee.projectapp431.database.ExpenseDataStore;
+import edu.towson.cosc431.jubilee.jubilee.projectapp431.database.IDataStore;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -28,6 +30,7 @@ public class MainActivity extends AppCompatActivity
     private static final int ADD_EXPENSE_CODE = 100;
     private RecyclerView recyclerView;
     ArrayList<Expense> expenseList;
+    IDataStore dataStore;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,10 +59,10 @@ public class MainActivity extends AppCompatActivity
 
         getIntent();
         recyclerView = (RecyclerView) findViewById(R.id.recyclerView);
-        expenseList = new ArrayList<>();
+        dataStore = new ExpenseDataStore(this);
 
         //1. Instantiate adapter
-        ExpenseAdapter adapter = new ExpenseAdapter(expenseList);
+        ExpenseAdapter adapter = new ExpenseAdapter(dataStore);
         //2. Set the adapter on the recyclerView
         recyclerView.setAdapter(adapter);
         //3. Set the layout manager
@@ -151,12 +154,11 @@ public class MainActivity extends AppCompatActivity
                 //make expense object
                 Expense expense = new Expense(nameTxt,categoryTxt,amountTxt,dateTxt);
 
-                //add expense to list
-                expenseList.add(expense);
+                //add expense to dataStore
+                dataStore.addExpense(expense);
 
-                ExpenseAdapter expenseAdapter = new ExpenseAdapter(expenseList);
-                recyclerView.setAdapter(expenseAdapter);
-                expenseAdapter.notifyItemInserted(expenseList.size());
+                dataStore = new ExpenseDataStore(this);
+                recyclerView.setAdapter(new ExpenseAdapter(dataStore));
 
                 //todo: check expense for today's date and only display those with today's date
             }

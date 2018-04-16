@@ -1,5 +1,7 @@
 package edu.towson.cosc431.jubilee.jubilee.projectapp431;
 
+import java.util.UUID;
+
 /**
  * Created by Rachael on 3/24/2018.
  */
@@ -9,6 +11,7 @@ public class Expense {
     private String category;
     private String amount;
     private String dateSpent;
+    private UUID id;
 
     public String toString(){
         return "Expense:" + name + ", " + amount + ", " + category + ", " + dateSpent + ".";
@@ -23,6 +26,9 @@ public class Expense {
         this.dateSpent = dateSpent;
     }
 
+    public String getId() { return id.toString(); }
+
+    public void setId(String id) { this.id = UUID.fromString(id); }
     public String getName() {
         return name;
     }
