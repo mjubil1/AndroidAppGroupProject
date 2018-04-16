@@ -125,7 +125,15 @@ public class MainActivity extends AppCompatActivity
 
         int id = item.getItemId();
 
-        if(id == R.id.nav_editProfile) {
+        switch (id){
+            case R.id.nav_userProfile:
+                setContentView(R.layout.edit_profile);
+                break;
+            case R.id.nav_expenseReport:
+                setContentView(R.layout.expensereportlayout);
+                break;
+        }
+        /*if(id == R.id.nav_userProfile) {
 
             Fragment fragment = new Fragment();
             FragmentTransaction ft= getSupportFragmentManager().beginTransaction();
@@ -133,8 +141,8 @@ public class MainActivity extends AppCompatActivity
             ft.commit();
         }
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        drawer.closeDrawer(GravityCompat.START);
+        /*DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        drawer.closeDrawer(GravityCompat.START);*/
         return true;
     }
 

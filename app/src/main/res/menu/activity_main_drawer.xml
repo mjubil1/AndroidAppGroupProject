@@ -13,9 +13,9 @@
             android:icon="@drawable/ic_menu_gallery"
             android:title="Expense Report" />
         <item
-            android:id="@+id/nav_editUserProfile"
+            android:id="@+id/nav_userProfile"
             android:icon="@drawable/ic_menu_manage"
-            android:title="Edit User Profile" />
+            android:title="User Profile" />
         <item
             android:id="@+id/nav_savingsProfile"
             android:icon="@android:drawable/ic_menu_edit"
