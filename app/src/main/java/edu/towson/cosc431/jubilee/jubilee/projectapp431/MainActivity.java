@@ -78,28 +78,7 @@ public class MainActivity extends AppCompatActivity
             super.onBackPressed();
         }
     }
-    private void ExpenseReport(){
-        Intent intent = new Intent(this, ExpenseReport.class);
-        int expenses=expenseList.size();
-        ArrayList<String> category=new ArrayList<String>();
-        ArrayList<String>  amount=new ArrayList<String>();
-        ArrayList<String> name=new ArrayList<String>();
-        ArrayList<String> date=new ArrayList<String>();
 
-        for(int x=0;x<expenses;x++){
-            date.add(x,expenseList.get(x).getDateSpent());
-            name.add(x,expenseList.get(x).getName());
-            amount.add(x,expenseList.get(x).getAmount());
-            category.add(x,expenseList.get(x).getCategory());
-        }
-        intent.putStringArrayListExtra("date",date);
-        intent.putStringArrayListExtra("name",name);
-        intent.putStringArrayListExtra("amount",amount);
-        intent.putStringArrayListExtra("category",category);
-        intent.putExtra("expenses", expenses);
-        startActivityForResult(intent, 50);
-
-    }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -137,10 +116,9 @@ public class MainActivity extends AppCompatActivity
                 setContentView(R.layout.edit_profile);
                 break;
             case R.id.nav_expenseReport:
-                //Intent intent = new Intent(getApplicationContext(), ExpenseReport.class);
-                //startActivity(intent);
 
-                //issue with radio button reference- probably needs radio group
+                //ExpenseReport();
+                //needs to be passed a list of the current expenses somehow?
                 setContentView(R.layout.expensereportlayout);
                 break;
             case R.id.nav_savingsProfile:
@@ -151,6 +129,7 @@ public class MainActivity extends AppCompatActivity
                 setContentView(R.layout.activity_main);
                 break;
         }
+
         /*if(id == R.id.nav_userProfile) {
 
             Fragment fragment = new Fragment();
@@ -163,7 +142,30 @@ public class MainActivity extends AppCompatActivity
         drawer.closeDrawer(GravityCompat.START);*/
         return true;
     }
+   /* private void ExpenseReport(){
+        expenseList=new ArrayList<Expense>();
+        expenseList.add(new Expense("LOL", "2.76", "Hi", "7/8/17"));
+        Intent intent = new Intent(this, ExpenseReport.class);
+        int expenses=expenseList.size();
+        ArrayList<String> category=new ArrayList<String>();
+        ArrayList<String>  amount=new ArrayList<String>();
+        ArrayList<String> name=new ArrayList<String>();
+        ArrayList<String> date=new ArrayList<String>();
 
+        for(int x=0;x<expenses;x++){
+            date.add(x,expenseList.get(x).getDateSpent());
+            name.add(x,expenseList.get(x).getName());
+            amount.add(x,expenseList.get(x).getAmount());
+            category.add(x,expenseList.get(x).getCategory());
+        }
+        intent.putStringArrayListExtra("date",date);
+        intent.putStringArrayListExtra("name",name);
+        intent.putStringArrayListExtra("amount",amount);
+        intent.putStringArrayListExtra("category",category);
+        intent.putExtra("expenses", expenses);
+        startActivityForResult(intent, 50);
+
+    }*/
     protected void onActivityResult(int requestCode, int resultCode, Intent data){
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == ADD_EXPENSE_CODE){

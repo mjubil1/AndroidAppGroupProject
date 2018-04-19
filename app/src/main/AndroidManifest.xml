@@ -20,7 +20,6 @@
             </intent-filter>
         </activity>
         <activity android:name="edu.towson.cosc431.jubilee.jubilee.projectapp431.NewExpenseActivity"></activity>
-        <activity android:name="edu.towson.cosc431.jubilee.jubilee.projectapp431.ExpenseReport"></activity>
         <activity android:name="edu.towson.cosc431.jubilee.jubilee.projectapp431.SavingsProfile"></activity>
 
     </application>

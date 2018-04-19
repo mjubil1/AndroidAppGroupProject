@@ -17,7 +17,15 @@ public class Expense {
         return "Expense:" + name + ", " + amount + ", " + category + ", " + dateSpent + ".";
     }
 
-    public Expense(){}
+    public Expense(){
+        name="";
+        category="";
+        amount="";
+        dateSpent="";
+
+
+
+    }
 
     public Expense(String name, String category, String amount, String dateSpent){
         this.name = name;
