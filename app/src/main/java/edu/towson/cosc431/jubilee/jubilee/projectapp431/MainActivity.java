@@ -8,6 +8,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -30,7 +31,7 @@ public class MainActivity extends AppCompatActivity
     private static final int ADD_EXPENSE_CODE = 100;
     private RecyclerView recyclerView;
     ArrayList<Expense> expenseList;
-    IDataStore dataStore;
+    ExpenseDataStore dataStore;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -184,8 +185,9 @@ public class MainActivity extends AppCompatActivity
 
                 dataStore = new ExpenseDataStore(this);
                 recyclerView.setAdapter(new ExpenseAdapter(dataStore));
+                Log.d("did I get the expense????", expense.toString());
+                //I did get the expense
 
-                //todo: check expense for today's date and only display those with today's date
             }
         }
     }
