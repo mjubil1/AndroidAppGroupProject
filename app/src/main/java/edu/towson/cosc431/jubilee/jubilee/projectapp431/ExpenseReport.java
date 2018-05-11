@@ -81,32 +81,14 @@ public class ExpenseReport extends Fragment implements View.OnClickListener{
         et[5].setVisibility(View.INVISIBLE);
         et[6].setClickable(false);
         et[6].setVisibility(View.INVISIBLE);
-
+data=savedInstanceState;
 
         //et[0].isInEditMode(); is it editable?
         calculate();
 
         return view;
     }
-
-//needs to somehow return arraylist of current expenses
-    private ArrayList<Expense> converttoexpense(){
-        /*
-        Intent intent=this.getIntent();
-        ArrayList<String> category=intent.getStringArrayListExtra("category");
-        ArrayList<String> name=intent.getStringArrayListExtra("name");
-        ArrayList<String> amount=intent.getStringArrayListExtra("amount");
-        ArrayList<String> date=intent.getStringArrayListExtra("date");
-        ArrayList <Expense> exp=new ArrayList<Expense>();
-        int expenses=intent.getIntExtra("expenses",0);
-        for(int x=0;x<expenses;x++){
-            //String name, String category, String amount, String dateSpent
-            Expense e=new Expense(name.get(x),category.get(x),amount.get(x),date.get(x));
-            exp.add(e);
-        }
-        return exp;
-        */
-    return new ArrayList<Expense>();}
+Bundle data;
 
     private ArrayList<Expense> next(ArrayList<Expense> exp){
         //find next category
@@ -248,7 +230,29 @@ public class ExpenseReport extends Fragment implements View.OnClickListener{
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
+
+
+
+
     }
+    //needs to somehow return arraylist of current expenses
+    private ArrayList<Expense> converttoexpense(){
+
+
+        ArrayList<String> category=data.getStringArrayList("category");
+        ArrayList<String> name=data.getStringArrayList("name");
+        ArrayList<String> amount=data.getStringArrayList("amount");
+        ArrayList<String> date=data.getStringArrayList("date");
+        ArrayList <Expense> exp=new ArrayList<Expense>();
+        int expenses=data.getInt("expenses",0);
+        for(int x=0;x<expenses;x++){
+            //String name, String category, String amount, String dateSpent
+            Expense e=new Expense(name.get(x),category.get(x),amount.get(x),date.get(x));
+            exp.add(e);
+        }
+        return exp;
+
+      }
 
     @Override
     public void onDetach() {
