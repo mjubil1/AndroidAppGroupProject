@@ -17,18 +17,22 @@ public class Expense {
         return "Expense:" + name + ", " + amount + ", " + category + ", " + dateSpent + ".";
     }
 
-    public Expense(){}
+    public Expense(){
+        id = UUID.randomUUID();
+    }
 
     public Expense(String name, String category, String amount, String dateSpent){
         this.name = name;
         this.category = category;
         this.amount = amount;
         this.dateSpent = dateSpent;
+        this.id = UUID.randomUUID();
     }
 
     public String getId() { return id.toString(); }
 
     public void setId(String id) { this.id = UUID.fromString(id); }
+
     public String getName() {
         return name;
     }

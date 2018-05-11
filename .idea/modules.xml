@@ -4,7 +4,11 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/ProjectApp431.iml" filepath="$PROJECT_DIR$/ProjectApp431.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+<<<<<<< HEAD
       <module fileurl="file://C:\Users\Montrell\Desktop\Cosc431Projects\ProjectApp431\group-repo.iml" filepath="C:\Users\Montrell\Desktop\Cosc431Projects\ProjectApp431\group-repo.iml" />
+=======
+      <module fileurl="file://$PROJECT_DIR$/groupstuff.iml" filepath="$PROJECT_DIR$/groupstuff.iml" />
+>>>>>>> 8e91fb27130ef6db54130b53cfaf4a782a186a5c
     </modules>
   </component>
 </project>

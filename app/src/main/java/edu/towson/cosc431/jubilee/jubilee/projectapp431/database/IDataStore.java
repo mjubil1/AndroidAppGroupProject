@@ -10,9 +10,10 @@ import edu.towson.cosc431.jubilee.jubilee.projectapp431.Expense;
  */
 
 public interface IDataStore {
-    List<Expense> getExpense();
+    List<Expense> getExpenses();
     void addExpense(Expense expense);
     void deleteExpense(Expense expense);
     void updateExpense(Expense expense);
     Expense getExpenseById(UUID uuid);
+    List<Expense> getTodayExpenses();
 }

@@ -22,7 +22,7 @@ public class ExpenseAdapter extends RecyclerView.Adapter<ExpenseViewHolder> {
 
     public ExpenseAdapter(IDataStore dataStore)
     {
-        this.expenseList = dataStore.getExpense();
+        this.expenseList = dataStore.getTodayExpenses();
         this.dataStore = dataStore;
     }
 
@@ -41,12 +41,12 @@ public class ExpenseAdapter extends RecyclerView.Adapter<ExpenseViewHolder> {
 
     @Override
     public int getItemCount() {
-        return 0;
+        return this.expenseList.size();
     }
 
     public void deleteExpense(Expense expense) {
         dataStore.deleteExpense(expense); //delete from db
-        expenseList = dataStore.getExpense(); // re-read all the expense from the db
+        expenseList = dataStore.getTodayExpenses(); // re-read all the expense from the db
         notifyDataSetChanged(); // recyclerview update yourself!
     }
 }
