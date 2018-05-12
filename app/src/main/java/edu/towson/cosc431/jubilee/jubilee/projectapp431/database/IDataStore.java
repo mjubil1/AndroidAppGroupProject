@@ -15,5 +15,5 @@ public interface IDataStore {
     void deleteExpense(Expense expense);
     void updateExpense(Expense expense);
     Expense getExpenseById(UUID uuid);
-    List<Expense> getTodayExpenses();
+    List<Expense> getTodayExpenses(String today);
 }

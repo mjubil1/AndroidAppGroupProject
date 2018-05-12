@@ -103,29 +103,30 @@ public class ExpenseDataStore implements IDataStore {
         return expense;
     }
 
-    //does this work??? the words aren't orange
     //trying to return only the expenses from today's date
     @Override
-    public List<Expense> getTodayExpenses() {
-        String dateFormat = "MM/dd/yyyy";
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(dateFormat, Locale.US);
-        String today = simpleDateFormat.format(Calendar.getInstance().getTime());
+    public List<Expense> getTodayExpenses(String today) {
         SQLiteDatabase db = this.helper.getReadableDatabase();
         Cursor cursor = db.rawQuery("select * from " + DatabaseContract.TABLE_NAME + " where " +
-            DatabaseContract.DELETED_COLUMN + " = 0 AND " + DatabaseContract.DATE_COLUMN + " = " + today, null);
+            DatabaseContract.DELETED_COLUMN + " = 0", null);
         List<Expense> todayExpenses = new ArrayList<>();
         while (cursor.moveToNext()) {
-            Expense expense = new Expense();
-            String id = cursor.getString(cursor.getColumnIndex(DatabaseContract._ID));
-            String name = cursor.getString(cursor.getColumnIndex(DatabaseContract.NAME_COLUMN));
-            String category = cursor.getString(cursor.getColumnIndex(DatabaseContract.CATEGORY_COLUMN));
-            String amount = cursor.getString(cursor.getColumnIndex(DatabaseContract.SPENT_COLUMN));
-            String dateSpent = cursor.getString(cursor.getColumnIndex(DatabaseContract.DATE_COLUMN));
-            expense.setId(id);
-            expense.setName(name);
-            expense.setCategory(category);
-            expense.setAmount(amount);
-            expense.setDateSpent(dateSpent);
+            String date = cursor.getString(cursor.getColumnIndex(DatabaseContract.DATE_COLUMN));
+
+            if (date.equals(today)){
+                Expense expense = new Expense();
+                String id = cursor.getString(cursor.getColumnIndex(DatabaseContract._ID));
+                String name = cursor.getString(cursor.getColumnIndex(DatabaseContract.NAME_COLUMN));
+                String category = cursor.getString(cursor.getColumnIndex(DatabaseContract.CATEGORY_COLUMN));
+                String amount = cursor.getString(cursor.getColumnIndex(DatabaseContract.SPENT_COLUMN));
+                String dateSpent = cursor.getString(cursor.getColumnIndex(DatabaseContract.DATE_COLUMN));
+                expense.setId(id);
+                expense.setName(name);
+                expense.setCategory(category);
+                expense.setAmount(amount);
+                expense.setDateSpent(dateSpent);
+                todayExpenses.add(expense);
+            }
         }
         return todayExpenses;
     }
