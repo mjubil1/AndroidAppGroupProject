@@ -29,7 +29,7 @@ import java.util.Date;
 
  * to handle interaction events.
  */
-public class ExpenseReport extends Fragment implements View.OnClickListener{
+public class ExpenseReport extends AppCompatActivity implements View.OnClickListener{
 
 
     private boolean permonth, peryear, perweek;
@@ -43,12 +43,13 @@ public class ExpenseReport extends Fragment implements View.OnClickListener{
 
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        View view=inflater.inflate(R.layout.expensereportlayout, container, false);
-        weekly=view.findViewById(R.id.ExpenseWeekly);
-        yearly=view.findViewById(R.id.ExpenseAnnual);
-        monthly=view.findViewById(R.id.ExpenseMonthly);
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.expensereportlayout);
+
+        weekly= findViewById(R.id.ExpenseWeekly);
+        yearly= findViewById(R.id.ExpenseAnnual);
+        monthly= findViewById(R.id.ExpenseMonthly);
         weekly.setOnClickListener(this);
         monthly.setOnClickListener(this);
         yearly.setOnClickListener(this);
@@ -60,13 +61,13 @@ public class ExpenseReport extends Fragment implements View.OnClickListener{
         monthly.setChecked(false);
         //menu.findViewById(R.id.ExpenseBacktohomescreen);
         // menu.setOnClickListener(this);
-        et[6]=view.findViewById(R.id.ExpenseEditText6);
-        et[5]=view.findViewById(R.id.ExpenseEditText5);
-        et[4]=view.findViewById(R.id.ExpenseEditText4);
-        et[3]=view.findViewById(R.id.ExpenseEditText3);
-        et[2]=view.findViewById(R.id.ExpenseEditText2);
-        et[1]=view.findViewById(R.id.ExpenseEditText1);
-        et[0]=view.findViewById(R.id.ExpenseEditText);
+        et[6]= findViewById(R.id.ExpenseEditText6);
+        et[5]= findViewById(R.id.ExpenseEditText5);
+        et[4]= findViewById(R.id.ExpenseEditText4);
+        et[3]= findViewById(R.id.ExpenseEditText3);
+        et[2]= findViewById(R.id.ExpenseEditText2);
+        et[1]= findViewById(R.id.ExpenseEditText1);
+        et[0]= findViewById(R.id.ExpenseEditText);
         et[0].setClickable(false);
         et[0].setVisibility(View.INVISIBLE);
         et[1].setClickable(false);
@@ -86,7 +87,6 @@ data=savedInstanceState;
         //et[0].isInEditMode(); is it editable?
         calculate();
 
-        return view;
     }
 Bundle data;
 
@@ -226,15 +226,6 @@ Bundle data;
 
 
 
-
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-
-
-
-
-    }
     //needs to somehow return arraylist of current expenses
     private ArrayList<Expense> converttoexpense(){
 
@@ -254,10 +245,5 @@ Bundle data;
 
       }
 
-    @Override
-    public void onDetach() {
-        super.onDetach();
-
-    }
 
 }

@@ -130,31 +130,20 @@ public class MainActivity extends AppCompatActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
 
         switch (id){
-            case R.id.nav_userProfile:
+            case R.id.nav_editProfile:
                 intent = new Intent(MainActivity.this, EditProfileActivity.class);
                 startActivity(intent);
                 break;
             case R.id.nav_expenseReport:
-                //ExpenseReport er=new ExpenseReport();
-                //er.setArguments(ExpenseReport());
-
-                Fragment fragment = new Fragment();
-
-                FragmentTransaction trans=getSupportFragmentManager().beginTransaction();
-                trans.replace(R.id.frame, fragment, "expensereportlayout");
-                trans.addToBackStack(null);
-                trans.commit();
-                //setContentView(R.layout.expensereportlayout);
+                intent = new Intent(MainActivity.this, ExpenseReport.class);
+                startActivity(intent);
                 break;
             case R.id.nav_savingsProfile:
                 Intent intent = new Intent(getApplicationContext(), SavingsProfile.class);
                 startActivityForResult(intent, SAVING_PROFILE_CODE);
                 drawer.closeDrawer(GravityCompat.START);
                 break;
-            case R.id.nav_home:
-                setContentView(R.layout.activity_main);
-                break;
-            case R.id.nav_settings:
+            case R.id.nav_userProfile:
                 intent = new Intent(MainActivity.this, ProfileSettingsActivity.class);
                 startActivity(intent);
                 break;
