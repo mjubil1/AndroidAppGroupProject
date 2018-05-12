@@ -34,13 +34,15 @@
 
     <EditText
         android:id="@+id/savingsGoalEt"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="8dp"
         android:ems="10"
         android:hint="$ Savings Goal"
         android:inputType="numberDecimal"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView10" />
 
@@ -57,14 +59,16 @@
 
     <EditText
         android:id="@+id/incomeEt"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginStart="16dp"
         android:layout_marginTop="8dp"
         android:ems="10"
         android:hint="$ Income"
         android:inputType="numberDecimal"
-        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView11" />
 
     <TextView
@@ -82,14 +86,16 @@
 
     <EditText
         android:id="@+id/billsEt"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginStart="16dp"
         android:layout_marginTop="8dp"
         android:ems="10"
         android:hint="$ Bills"
         android:inputType="numberDecimal"
-        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView12" />
 
     <Button
@@ -99,7 +105,7 @@
         android:layout_marginBottom="24dp"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
-        android:text="Home"
+        android:text="Update"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"

@@ -1,8 +1,13 @@
 package edu.towson.cosc431.jubilee.jubilee.projectapp431;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Parcelable;
+import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -16,9 +21,13 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.TextView;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
+import java.util.Locale;
 
 import edu.towson.cosc431.jubilee.jubilee.projectapp431.database.ExpenseDataStore;
 
@@ -28,9 +37,13 @@ public class MainActivity extends AppCompatActivity
     private static final String TAG = MainActivity.class.getName();
 
     private static final int ADD_EXPENSE_CODE = 100;
+    private static final int SAVING_PROFILE_CODE = 200;
     private RecyclerView recyclerView;
+    private TextView allocationTv;
     ArrayList<Expense> expenseList;
     ExpenseDataStore dataStore;
+    String allocation;
+    Double dailyAlloc;
 
     Intent intent;
 
@@ -40,6 +53,12 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        allocationTv = (TextView) findViewById(R.id.allocationTv);
+
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        allocation = prefs.getString("allocation", "Update Savings Profile");
+        allocationTv.setText(allocation);
+
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -108,6 +127,7 @@ public class MainActivity extends AppCompatActivity
     public boolean onNavigationItemSelected(MenuItem item) {
 
         int id = item.getItemId();
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
 
         switch (id){
             case R.id.nav_userProfile:
@@ -115,18 +135,21 @@ public class MainActivity extends AppCompatActivity
                 startActivity(intent);
                 break;
             case R.id.nav_expenseReport:
-                ExpenseReport er=new ExpenseReport();
-                er.setArguments(ExpenseReport());
+                //ExpenseReport er=new ExpenseReport();
+                //er.setArguments(ExpenseReport());
+
+                Fragment fragment = new Fragment();
 
                 FragmentTransaction trans=getSupportFragmentManager().beginTransaction();
-                trans.replace(R.id.container, er);
+                trans.replace(R.id.frame, fragment, "expensereportlayout");
                 trans.addToBackStack(null);
                 trans.commit();
                 //setContentView(R.layout.expensereportlayout);
                 break;
             case R.id.nav_savingsProfile:
-                intent = new Intent(MainActivity.this, SavingsProfile.class);
-                startActivity(intent);
+                Intent intent = new Intent(getApplicationContext(), SavingsProfile.class);
+                startActivityForResult(intent, SAVING_PROFILE_CODE);
+                drawer.closeDrawer(GravityCompat.START);
                 break;
             case R.id.nav_home:
                 setContentView(R.layout.activity_main);
@@ -186,7 +209,7 @@ public class MainActivity extends AppCompatActivity
             if (resultCode == RESULT_OK){
                 //handle expense
                 String nameTxt = data.getStringExtra(NewExpenseActivity.EXPENSE_NAME_KEY);
-                String amountTxt = "$" + data.getStringExtra(NewExpenseActivity.EXPENSE_AMOUNT_KEY);
+                String amountTxt = data.getStringExtra(NewExpenseActivity.EXPENSE_AMOUNT_KEY);
                 String categoryTxt = data.getStringExtra(NewExpenseActivity.EXPENSE_CATEGORY_KEY);
                 String dateTxt = data.getStringExtra(NewExpenseActivity.EXPENSE_DATE_KEY);
 
@@ -198,13 +221,54 @@ public class MainActivity extends AppCompatActivity
                 dataStore.addExpense(expense);
                 ExpenseAdapter adapter = new ExpenseAdapter(dataStore);
                 recyclerView.setAdapter(adapter);
-                Log.d(TAG,"did I get the expense???? " + expense.toString());
-                //I did get the expense
-
                 adapter.notifyDataSetChanged();
 
+                //sum today's expenses and subtract from allocation
+                String dateFormat = "MM/dd/yyyy";
+                SimpleDateFormat simpleDateFormat = new SimpleDateFormat(dateFormat, Locale.US);
+                String today = simpleDateFormat.format(Calendar.getInstance().getTime());
+                double sumToday = dataStore.sumTodayExpenses(today);
+                dailyAlloc -= sumToday;
+                allocation = "$ " + String.format("%.2f", dailyAlloc);
+                allocationTv.setText(allocation);
 
+                SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+                SharedPreferences.Editor editor = prefs.edit();
+                editor.putString("allocation", allocation).apply();
+            }
+        }
+        if (requestCode == SAVING_PROFILE_CODE) {
+            if (resultCode == RESULT_OK){
+                //get data from intent
+                Double savingsGoal = Double.parseDouble(data.getStringExtra(SavingsProfile.SAVING_GOAL_KEY));
+                Double income = Double.parseDouble(data.getStringExtra(SavingsProfile.INCOME_KEY));
+                Double bills = Double.parseDouble(data.getStringExtra(SavingsProfile.BILLS_KEY));
+
+                //calculate daily allocation
+                Double availableMoney = income - bills - savingsGoal;
+                Calendar cal = Calendar.getInstance();
+                int totalDays = cal.getActualMaximum(Calendar.DAY_OF_MONTH);
+                dailyAlloc = availableMoney/totalDays;
+
+                //subtract today's expenses if savings goals are edited
+                String dateFormat = "MM/dd/yyyy";
+                SimpleDateFormat simpleDateFormat = new SimpleDateFormat(dateFormat, Locale.US);
+                String today = simpleDateFormat.format(Calendar.getInstance().getTime());
+                dailyAlloc -= dataStore.sumTodayExpenses(today);
+
+                //set daily alloc to textView
+                allocationTv = findViewById(R.id.allocationTv);
+                allocation = "$ " + String.format("%.2f", dailyAlloc);
+                allocationTv.setText(allocation);
+
+                //subtract today's expenses if savings goals are edited
+
+
+                SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+                SharedPreferences.Editor editor = prefs.edit();
+                editor.putString("allocation", allocation).apply();
             }
         }
     }
+
 }
