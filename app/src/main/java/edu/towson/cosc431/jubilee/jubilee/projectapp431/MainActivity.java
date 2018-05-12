@@ -18,8 +18,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import edu.towson.cosc431.jubilee.jubilee.projectapp431.R;
@@ -30,7 +32,9 @@ public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
     private static final int ADD_EXPENSE_CODE = 100;
+    private static final int SAVING_PROFILE_CODE = 200;
     private RecyclerView recyclerView;
+    private TextView allocationTv;
     ArrayList<Expense> expenseList;
     ExpenseDataStore dataStore;
 
@@ -108,6 +112,7 @@ public class MainActivity extends AppCompatActivity
     public boolean onNavigationItemSelected(MenuItem item) {
 
         int id = item.getItemId();
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
 
         switch (id){
             case R.id.nav_userProfile:
@@ -118,20 +123,21 @@ public class MainActivity extends AppCompatActivity
                 setContentView(R.layout.edit_profile);
                 break;
             case R.id.nav_expenseReport:
-                ExpenseReport er=new ExpenseReport();
-                er.setArguments(ExpenseReport());
+                //ExpenseReport er=new ExpenseReport();
+                //er.setArguments(ExpenseReport());
 
-
+                Fragment fragment = new Fragment();
 
                 FragmentTransaction trans=getSupportFragmentManager().beginTransaction();
-                trans.replace(R.id.container, er);
+                trans.replace(R.id.frame, fragment, "expensereportlayout");
                 trans.addToBackStack(null);
                 trans.commit();
                 //setContentView(R.layout.expensereportlayout);
                 break;
             case R.id.nav_savingsProfile:
                 Intent intent = new Intent(getApplicationContext(), SavingsProfile.class);
-                startActivity(intent);
+                startActivityForResult(intent, SAVING_PROFILE_CODE);
+                drawer.closeDrawer(GravityCompat.START);
                 break;
             case R.id.nav_home:
                 setContentView(R.layout.activity_main);
@@ -203,8 +209,24 @@ public class MainActivity extends AppCompatActivity
                 //I did get the expense
 
                 adapter.notifyDataSetChanged();
+            }
+        }
+        if (requestCode == SAVING_PROFILE_CODE) {
+            if (resultCode == RESULT_OK){
+                //get data from intent
+                Double savingsGoal = Double.parseDouble(data.getStringExtra(SavingsProfile.SAVING_GOAL_KEY));
+                Double income = Double.parseDouble(data.getStringExtra(SavingsProfile.INCOME_KEY));
+                Double bills = Double.parseDouble(data.getStringExtra(SavingsProfile.BILLS_KEY));
 
+                //calculate daily allocation
+                Double availableMoney = income - bills - savingsGoal;
+                Calendar cal = Calendar.getInstance();
+                int totalDays = cal.getActualMaximum(Calendar.DAY_OF_MONTH);
+                Double dailyAlloc = availableMoney/totalDays;
 
+                //set daily alloc to textView
+                allocationTv = findViewById(R.id.allocationTv);
+                allocationTv.setText("$ " + String.format("%.2f", dailyAlloc));
             }
         }
     }

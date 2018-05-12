@@ -13,6 +13,9 @@ import android.widget.EditText;
 
 public class SavingsProfile extends AppCompatActivity{
 
+    public static final String SAVING_GOAL_KEY = "SAVING_GOAL";
+    public static final String INCOME_KEY = "INCOME";
+    public static final String BILLS_KEY = "BILLS";
     //widgets
     EditText savingsGoal;
     EditText monthlyIncome;
@@ -31,13 +34,20 @@ public class SavingsProfile extends AppCompatActivity{
         savingsHomeBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                //get values from edit text
                 String savingsGoalTxt = savingsGoal.getText().toString();
                 String monthlyIncomeTxt = monthlyIncome.getText().toString();
                 String monthlyBillsTxt = monthlyBills.getText().toString();
 
-                // TODO: use this info to calculate budget
-                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-                startActivity(intent);
+                //make an intent with these values
+                Intent resultIntent = new Intent();
+                resultIntent.putExtra(SAVING_GOAL_KEY, savingsGoalTxt);
+                resultIntent.putExtra(INCOME_KEY, monthlyIncomeTxt);
+                resultIntent.putExtra(BILLS_KEY, monthlyBillsTxt);
+
+                //set result and finish
+                setResult(RESULT_OK, resultIntent);
+                finish();
             }
         });
     }
