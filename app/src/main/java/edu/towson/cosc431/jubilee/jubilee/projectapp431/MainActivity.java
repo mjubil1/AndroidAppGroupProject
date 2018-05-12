@@ -24,9 +24,11 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Locale;
 
 import edu.towson.cosc431.jubilee.jubilee.projectapp431.R;
 import edu.towson.cosc431.jubilee.jubilee.projectapp431.database.ExpenseDataStore;
@@ -42,6 +44,7 @@ public class MainActivity extends AppCompatActivity
     ArrayList<Expense> expenseList;
     ExpenseDataStore dataStore;
     String allocation;
+    Double dailyAlloc;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -204,7 +207,7 @@ public class MainActivity extends AppCompatActivity
             if (resultCode == RESULT_OK){
                 //handle expense
                 String nameTxt = data.getStringExtra(NewExpenseActivity.EXPENSE_NAME_KEY);
-                String amountTxt = "$" + data.getStringExtra(NewExpenseActivity.EXPENSE_AMOUNT_KEY);
+                String amountTxt = data.getStringExtra(NewExpenseActivity.EXPENSE_AMOUNT_KEY);
                 String categoryTxt = data.getStringExtra(NewExpenseActivity.EXPENSE_CATEGORY_KEY);
                 String dateTxt = data.getStringExtra(NewExpenseActivity.EXPENSE_DATE_KEY);
 
@@ -216,10 +219,20 @@ public class MainActivity extends AppCompatActivity
                 dataStore.addExpense(expense);
                 ExpenseAdapter adapter = new ExpenseAdapter(dataStore);
                 recyclerView.setAdapter(adapter);
-                Log.d("did I get the expense????", expense.toString());
-                //I did get the expense
-
                 adapter.notifyDataSetChanged();
+
+                //sum today's expenses and subtract from allocation
+                String dateFormat = "MM/dd/yyyy";
+                SimpleDateFormat simpleDateFormat = new SimpleDateFormat(dateFormat, Locale.US);
+                String today = simpleDateFormat.format(Calendar.getInstance().getTime());
+                double sumToday = dataStore.sumTodayExpenses(today);
+                dailyAlloc -= sumToday;
+                allocation = "$ " + String.format("%.2f", dailyAlloc);
+                allocationTv.setText(allocation);
+
+                SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+                SharedPreferences.Editor editor = prefs.edit();
+                editor.putString("allocation", allocation).apply();
             }
         }
         if (requestCode == SAVING_PROFILE_CODE) {
@@ -233,30 +246,27 @@ public class MainActivity extends AppCompatActivity
                 Double availableMoney = income - bills - savingsGoal;
                 Calendar cal = Calendar.getInstance();
                 int totalDays = cal.getActualMaximum(Calendar.DAY_OF_MONTH);
-                Double dailyAlloc = availableMoney/totalDays;
+                dailyAlloc = availableMoney/totalDays;
+
+                //subtract today's expenses if savings goals are edited
+                String dateFormat = "MM/dd/yyyy";
+                SimpleDateFormat simpleDateFormat = new SimpleDateFormat(dateFormat, Locale.US);
+                String today = simpleDateFormat.format(Calendar.getInstance().getTime());
+                dailyAlloc -= dataStore.sumTodayExpenses(today);
 
                 //set daily alloc to textView
                 allocationTv = findViewById(R.id.allocationTv);
                 allocation = "$ " + String.format("%.2f", dailyAlloc);
                 allocationTv.setText(allocation);
 
+                //subtract today's expenses if savings goals are edited
+
+
                 SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
                 SharedPreferences.Editor editor = prefs.edit();
-                editor.putString("allocation", allocation).commit();
+                editor.putString("allocation", allocation).apply();
             }
         }
     }
 
-    @Override
-    protected void onSaveInstanceState(Bundle savedInstanceState) {
-        super.onSaveInstanceState(savedInstanceState);
-        savedInstanceState.putSerializable("allocation", allocation);
-    }
-
-    @Override
-    protected void onRestoreInstanceState(Bundle savedInstanceState){
-        super.onRestoreInstanceState(savedInstanceState);
-        allocation = (String) savedInstanceState.getSerializable("allocation");
-        allocationTv.setText(allocation);
-    }
 }
