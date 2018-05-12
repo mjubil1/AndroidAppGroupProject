@@ -13,9 +13,9 @@ import edu.towson.cosc431.jubilee.jubilee.projectapp431.R;
 
 public class ExpenseViewHolder extends RecyclerView.ViewHolder{
 
-    Expense expense;
-    TextView expenseNameTv;
-    TextView expenseAmountTv;
+    private Expense expense;
+    private TextView expenseNameTv;
+    private TextView expenseAmountTv;
 
     public ExpenseViewHolder(View view) {
         super(view);
