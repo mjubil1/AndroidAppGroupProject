@@ -3,8 +3,6 @@ package edu.towson.cosc431.jubilee.jubilee.projectapp431;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -22,17 +20,19 @@ import android.view.MenuItem;
 import java.util.ArrayList;
 import java.util.List;
 
-import edu.towson.cosc431.jubilee.jubilee.projectapp431.R;
 import edu.towson.cosc431.jubilee.jubilee.projectapp431.database.ExpenseDataStore;
-import edu.towson.cosc431.jubilee.jubilee.projectapp431.database.IDataStore;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
+
+    private static final String TAG = MainActivity.class.getName();
 
     private static final int ADD_EXPENSE_CODE = 100;
     private RecyclerView recyclerView;
     ArrayList<Expense> expenseList;
     ExpenseDataStore dataStore;
+
+    Intent intent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -111,17 +111,12 @@ public class MainActivity extends AppCompatActivity
 
         switch (id){
             case R.id.nav_userProfile:
-                //Intent intent = new Intent(getApplicationContext(), EditProfile.class);
-                //startActivity(intent);
-
-                //class extends fragment, not AppCompatActivity so not declared in manifest
-                setContentView(R.layout.edit_profile);
+                intent = new Intent(MainActivity.this, EditProfileActivity.class);
+                startActivity(intent);
                 break;
             case R.id.nav_expenseReport:
                 ExpenseReport er=new ExpenseReport();
                 er.setArguments(ExpenseReport());
-
-
 
                 FragmentTransaction trans=getSupportFragmentManager().beginTransaction();
                 trans.replace(R.id.container, er);
@@ -130,11 +125,15 @@ public class MainActivity extends AppCompatActivity
                 //setContentView(R.layout.expensereportlayout);
                 break;
             case R.id.nav_savingsProfile:
-                Intent intent = new Intent(getApplicationContext(), SavingsProfile.class);
+                intent = new Intent(MainActivity.this, SavingsProfile.class);
                 startActivity(intent);
                 break;
             case R.id.nav_home:
                 setContentView(R.layout.activity_main);
+                break;
+            case R.id.nav_settings:
+                intent = new Intent(MainActivity.this, ProfileSettingsActivity.class);
+                startActivity(intent);
                 break;
         }
 
@@ -142,7 +141,7 @@ public class MainActivity extends AppCompatActivity
 
             Fragment fragment = new Fragment();
             FragmentTransaction ft= getSupportFragmentManager().beginTransaction();
-            ft.replace(R.id.frame,fragment,"edit_profile");
+            ft.replace(R.id.frame,fragment,"activity_edit_profile");
             ft.commit();
         }
 
@@ -199,7 +198,7 @@ public class MainActivity extends AppCompatActivity
                 dataStore.addExpense(expense);
                 ExpenseAdapter adapter = new ExpenseAdapter(dataStore);
                 recyclerView.setAdapter(adapter);
-                Log.d("did I get the expense????", expense.toString());
+                Log.d(TAG,"did I get the expense???? " + expense.toString());
                 //I did get the expense
 
                 adapter.notifyDataSetChanged();

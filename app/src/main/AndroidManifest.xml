@@ -19,9 +19,12 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="edu.towson.cosc431.jubilee.jubilee.projectapp431.NewExpenseActivity"></activity>
-        <activity android:name="edu.towson.cosc431.jubilee.jubilee.projectapp431.SavingsProfile"></activity>
-
+        <activity android:name=".EditProfileActivity" />
+        <activity android:name=".NewExpenseActivity" />
+        <activity android:name=".SavingsProfile" />
+        <activity
+            android:name=".ProfileSettingsActivity"
+            android:label="@string/title_activity_profile_settings"></activity>
     </application>
 
 </manifest>
