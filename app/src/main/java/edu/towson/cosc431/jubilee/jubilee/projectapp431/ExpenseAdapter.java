@@ -22,7 +22,7 @@ public class ExpenseAdapter extends RecyclerView.Adapter<ExpenseViewHolder> {
 
     public ExpenseAdapter(IDataStore dataStore)
     {
-        this.expenseList = dataStore.getTodayExpenses();
+        this.expenseList = dataStore.getExpenses();
         this.dataStore = dataStore;
     }
 

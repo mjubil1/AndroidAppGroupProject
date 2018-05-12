@@ -45,8 +45,8 @@ public class ExpenseDataStore implements IDataStore {
             expense.setCategory(category);
             expense.setAmount(amount);
             expense.setDateSpent(dateSpent);
+            expenses.add(expense);
         }
-        cursor.close();
         return expenses;
     }
 

@@ -195,12 +195,15 @@ public class MainActivity extends AppCompatActivity
                 Expense expense = new Expense(nameTxt,categoryTxt,amountTxt,dateTxt);
 
                 //add expense to dataStore
-                dataStore.addExpense(expense);
-
                 dataStore = new ExpenseDataStore(this);
-                recyclerView.setAdapter(new ExpenseAdapter(dataStore));
+                dataStore.addExpense(expense);
+                ExpenseAdapter adapter = new ExpenseAdapter(dataStore);
+                recyclerView.setAdapter(adapter);
                 Log.d("did I get the expense????", expense.toString());
                 //I did get the expense
+
+                adapter.notifyDataSetChanged();
+
 
             }
         }
