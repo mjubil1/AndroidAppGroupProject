@@ -1,7 +1,11 @@
 package edu.towson.cosc431.jubilee.jubilee.projectapp431;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Parcelable;
+import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
@@ -37,6 +41,7 @@ public class MainActivity extends AppCompatActivity
     private TextView allocationTv;
     ArrayList<Expense> expenseList;
     ExpenseDataStore dataStore;
+    String allocation;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,6 +49,12 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        allocationTv = (TextView) findViewById(R.id.allocationTv);
+
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        allocation = prefs.getString("allocation", "Update Savings Profile");
+        allocationTv.setText(allocation);
+
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -226,8 +237,26 @@ public class MainActivity extends AppCompatActivity
 
                 //set daily alloc to textView
                 allocationTv = findViewById(R.id.allocationTv);
-                allocationTv.setText("$ " + String.format("%.2f", dailyAlloc));
+                allocation = "$ " + String.format("%.2f", dailyAlloc);
+                allocationTv.setText(allocation);
+
+                SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+                SharedPreferences.Editor editor = prefs.edit();
+                editor.putString("allocation", allocation).commit();
             }
         }
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle savedInstanceState) {
+        super.onSaveInstanceState(savedInstanceState);
+        savedInstanceState.putSerializable("allocation", allocation);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState){
+        super.onRestoreInstanceState(savedInstanceState);
+        allocation = (String) savedInstanceState.getSerializable("allocation");
+        allocationTv.setText(allocation);
     }
 }
