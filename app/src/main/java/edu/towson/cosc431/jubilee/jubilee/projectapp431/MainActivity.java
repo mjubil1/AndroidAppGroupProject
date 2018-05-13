@@ -236,19 +236,30 @@ public class MainActivity extends AppCompatActivity
                 break;
             case R.id.nav_settings:
                 todayExpenses = dataStore.getTodayExpenses(today);
-                String todayString = listToString(todayExpenses);
-                intent = new Intent(Intent.ACTION_SEND);
-                intent.setType("message/rfc822");
-                intent.putExtra(Intent.EXTRA_EMAIL, new String[]{/*get user's email address*/});
-                intent.putExtra(Intent.EXTRA_SUBJECT, "Today's expenses");
-                intent.putExtra(Intent.EXTRA_TEXT, "These are your expenses from today:\n\n"
-                        + todayString);
-                try {
-                    startActivity(Intent.createChooser(intent, "Send mail..."));
-                } catch (android.content.ActivityNotFoundException e) {
-                    Toast.makeText(MainActivity.this, "Can't find any email clients.",
-                            Toast.LENGTH_LONG).show();
-                }
+                final String todayString = listToString(todayExpenses);
+                Thread thread = new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+
+                            intent = new Intent(Intent.ACTION_SEND);
+                            intent.setType("message/rfc822");
+                            intent.putExtra(Intent.EXTRA_EMAIL, new String[]{/*get user's email address*/});
+                            intent.putExtra(Intent.EXTRA_SUBJECT, "Today's expenses");
+                            intent.putExtra(Intent.EXTRA_TEXT, "These are your expenses from today:\n\n"
+                                    + todayString);
+                            try {
+                                startActivity(Intent.createChooser(intent, "Send mail..."));
+                            } catch (android.content.ActivityNotFoundException e) {
+                                Toast.makeText(MainActivity.this, "Can't find any email clients.",
+                                        Toast.LENGTH_LONG).show();
+                            }
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                });
+                thread.start();
                 drawer.closeDrawer(GravityCompat.START);
         }
         return true;
