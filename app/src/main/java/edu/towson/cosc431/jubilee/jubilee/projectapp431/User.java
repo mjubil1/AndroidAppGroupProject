@@ -7,24 +7,26 @@ import java.util.UUID;
  */
 
 public class User {
-    private String fName;
-    private String lName;
-    private String email;
-    private String address;
-    private String city;
-    private UUID id;
+    public String fName;
+    public String lName;
+    public String email;
+    public String address;
+    public String city;
+    public String state;
+    public UUID id;
     public int userId;
 
     public User() {
         id = UUID.randomUUID();
     }
 
-    public User(String fName, String lName, String email, String address, String city) {
+    public User(String fName, String lName, String email, String address, String city, String state) {
         this.fName = fName;
         this.lName = lName;
         this.email = email;
         this.address = address;
         this.city = city;
+        this.state = state;
 
         id = UUID.randomUUID();
     }
@@ -48,6 +50,8 @@ public class User {
     public String getCity() {
         return city;
     }
+
+    public String getState() { return state; }
 
     public String getId() {
         return id.toString();
@@ -75,6 +79,10 @@ public class User {
 
     public void setCity(String city) {
         this.city = city;
+    }
+
+    public void setState(String state) {
+        this.state = state;
     }
 
     public String toString() {

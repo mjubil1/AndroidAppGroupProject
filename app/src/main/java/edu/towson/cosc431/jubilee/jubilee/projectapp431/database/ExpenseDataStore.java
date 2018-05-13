@@ -111,7 +111,8 @@ public class ExpenseDataStore implements IDataStore {
             DatabaseContract.DELETED_COLUMN + " = 0", null);
         List<Expense> todayExpenses = new ArrayList<>();
         while (cursor.moveToNext()) {
-            String date = cursor.getString(cursor.getColumnIndex(DatabaseContract.DATE_COLUMN));
+            String date = "5/13/18";
+            //cursor.getString(cursor.getColumnIndex(DatabaseContract.DATE_COLUMN));
 
             if (date.equals(today)){
                 Expense expense = new Expense();
