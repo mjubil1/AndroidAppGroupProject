@@ -384,7 +384,7 @@ public class MainActivity extends AppCompatActivity
                     if (dailyAlloc <= 0) {
                         Toast.makeText(MainActivity.this, "You've exceeded your daily spending limit!",
                                 Toast.LENGTH_LONG).show();
-                        //put intentService showNotification() here!!!!!!
+                        //put intentService here!!!!!!
                         Intent myIntentService = new Intent(this, MyIntentService.class);
                         startService(myIntentService);
                     }
@@ -432,7 +432,9 @@ public class MainActivity extends AppCompatActivity
                 if (dailyAlloc < 0) {
                     Toast.makeText(MainActivity.this, "You've exceeded your daily spending limit!",
                             Toast.LENGTH_LONG).show();
-                    //put intentService showNotification() here!!!!!
+                    //put intentService here!!!!!
+                    Intent myIntentService = new Intent(this, MyIntentService.class);
+                    startService(myIntentService);
                 }
 
                 //set daily alloc to textView

@@ -137,8 +137,7 @@ public class ExpenseDataStore implements IDataStore {
                 DatabaseContract.DELETED_COLUMN + " = 0", null);
         Double sum = 0.0;
         while (cursor.moveToNext()) {
-            String date = "5/13/18";
-                    //cursor.getString(cursor.getColumnIndex(DatabaseContract.DATE_COLUMN));
+            String date = cursor.getString(cursor.getColumnIndex(DatabaseContract.DATE_COLUMN));
 
             if (date.equals(today)) {
                 Double amount  = Double.parseDouble(cursor.getString(cursor.getColumnIndex(DatabaseContract.SPENT_COLUMN)));
