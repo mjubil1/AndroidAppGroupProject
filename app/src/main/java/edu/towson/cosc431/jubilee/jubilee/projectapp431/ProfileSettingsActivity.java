@@ -13,8 +13,8 @@ import android.widget.TextView;
 
 public class ProfileSettingsActivity extends AppCompatActivity {
 
-    private static final int UPDATE_PROFILE_CODE  = 100;
     private static final String TAG = ProfileSettingsActivity.class.getName();
+    private static final int PROFILE_SETTINGS_CODE = 500;
 
     TextView fNameTv;
     TextView lNameTv;
@@ -23,8 +23,6 @@ public class ProfileSettingsActivity extends AppCompatActivity {
     TextView cityTv;
     TextView stateTv;
     Button goHomeBtn;
-
-    int requestCode = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,44 +40,26 @@ public class ProfileSettingsActivity extends AppCompatActivity {
         stateTv = findViewById(R.id.state);
         goHomeBtn = findViewById(R.id.goHomeBtn);
 
+        String firstName = getIntent().getStringExtra(EditProfileActivity.FIRST_NAME_KEY);
+        String lastName = getIntent().getStringExtra(EditProfileActivity.LAST_NAME_KEY);
+        String email = getIntent().getStringExtra(EditProfileActivity.EMAIL_KEY);
+        String address = getIntent().getStringExtra(EditProfileActivity.ADDRESS_KEY);
+        String city = getIntent().getStringExtra(EditProfileActivity.CITY_KEY);
+        String state = getIntent().getStringExtra(EditProfileActivity.STATE_KEY);
+
+        fNameTv.setText(firstName);
+        lNameTv.setText(lastName);
+        emailTv.setText(email);
+        addressTv.setText(address);
+        cityTv.setText(city);
+        stateTv.setText(state);
+
         goHomeBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 Intent profileSettingsIntent = new Intent(getApplicationContext(), MainActivity.class);
                 startActivity(profileSettingsIntent);
             }
         });
     }
-
-    @Override
-   protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-       super.onActivityResult(requestCode, resultCode, data);
-       Log.d(TAG,"In activity result");
-
-       if(requestCode == UPDATE_PROFILE_CODE) {
-           if(resultCode == RESULT_OK) {
-                try {
-                    String firstName = data.getStringExtra(EditProfileActivity.FIRST_NAME_KEY);
-                    String lastName = data.getStringExtra(EditProfileActivity.LAST_NAME_KEY);
-                    String email = data.getStringExtra(EditProfileActivity.EMAIL_KEY);
-                    String address = data.getStringExtra(EditProfileActivity.ADDRESS_KEY);
-                    String city = data.getStringExtra(EditProfileActivity.CITY_KEY);
-                    String state = data.getStringExtra(EditProfileActivity.STATE_KEY);
-
-                    fNameTv.setText(firstName);
-                    lNameTv.setText(lastName);
-                    emailTv.setText(email);
-                    addressTv.setText(address);
-                    cityTv.setText(city);
-                    stateTv.setText(state);
-
-                    setResult(requestCode);
-                    finish();
-                }catch(Exception e) {
-                    e.printStackTrace();
-                }
-           }
-       }
-   }
 }

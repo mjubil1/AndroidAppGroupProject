@@ -45,8 +45,16 @@ public class MainActivity extends AppCompatActivity
 
     private static final String TAG = MainActivity.class.getName();
 
-    private static final int USER_CODE = 100;
+    public static final String FIRST_NAME_KEY = "FIRST_NAME";
+    public static final String LAST_NAME_KEY = "LAST_NAME";
+    public static final String EMAIL_KEY = "EMAIL";
+    public static final String ADDRESS_KEY = "ADDRESS";
+    public static final String CITY_KEY = "CITY";
+    public static final String STATE_KEY = "STATE";
+
+    private static final int USER_CODE = 300;
     private static final int ADD_EXPENSE_CODE = 100;
+    private static final int EDIT_PROFILE_CODE = 400;
     private static final int SAVING_PROFILE_CODE = 200;
     private RecyclerView recyclerView;
     private TextView allocationTv;
@@ -56,7 +64,14 @@ public class MainActivity extends AppCompatActivity
     Double dailyAlloc;
     Double userLimitInput;
 
-    Intent intent;
+
+    String firstNameIntent;
+    String lastNameIntent;
+    String emailIntent;
+    String cityIntent;
+    String addressIntent;
+    String stateIntent;
+    Intent intent, myIntent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -214,7 +229,7 @@ public class MainActivity extends AppCompatActivity
         switch (id){
             case R.id.nav_editProfile:
                 intent = new Intent(MainActivity.this, EditProfileActivity.class);
-                startActivityForResult(intent,USER_CODE);
+                startActivityForResult(intent,EDIT_PROFILE_CODE);
                 break;
             case R.id.nav_expenseReport:
                 intent=ExpenseReport();
@@ -225,9 +240,8 @@ public class MainActivity extends AppCompatActivity
                 startActivityForResult(intent, SAVING_PROFILE_CODE);
                 drawer.closeDrawer(GravityCompat.START);
                 break;
-            case R.id.nav_userProfile:
-                intent = new Intent(MainActivity.this, ProfileSettingsActivity.class);
-                startActivityForResult(intent,USER_CODE);
+            case R.id.nav_setting:
+                startActivity(profileIntent());
                 break;
             case R.id.nav_linkCard:
                 intent = new Intent(Intent.ACTION_VIEW);
@@ -277,10 +291,7 @@ public class MainActivity extends AppCompatActivity
         intent = new Intent(MainActivity.this, ExpenseReport.class);
         List<Expense> list;
 
-            list = dataStore.getExpenses();
-
-
-
+        list = dataStore.getExpenses();
 
         int expenses=list.size();
         ArrayList<String> category=new ArrayList<String>();
@@ -304,6 +315,19 @@ public class MainActivity extends AppCompatActivity
 
     }
 
+    private Intent profileIntent() {
+        Intent i = new Intent(MainActivity.this,ProfileSettingsActivity.class);
+
+        i.putExtra(FIRST_NAME_KEY,firstNameIntent);
+        i.putExtra(LAST_NAME_KEY,lastNameIntent);
+        i.putExtra(EMAIL_KEY,emailIntent);
+        i.putExtra(CITY_KEY,cityIntent);
+        i.putExtra(ADDRESS_KEY,addressIntent);
+        i.putExtra(STATE_KEY,stateIntent);
+
+        return i;
+    }
+
     @TargetApi(Build.VERSION_CODES.GINGERBREAD)
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data)
@@ -311,20 +335,13 @@ public class MainActivity extends AppCompatActivity
         super.onActivityResult(requestCode, resultCode, data);
         Log.d(TAG,"In activity result");
 
-        if (requestCode == USER_CODE){
+        if (requestCode == ADD_EXPENSE_CODE){
             if (resultCode == RESULT_OK){
                 //handle expense
                 String nameTxt = data.getStringExtra(NewExpenseActivity.EXPENSE_NAME_KEY);
                 String amountTxt = data.getStringExtra(NewExpenseActivity.EXPENSE_AMOUNT_KEY);
                 String categoryTxt = data.getStringExtra(NewExpenseActivity.EXPENSE_CATEGORY_KEY);
                 String dateTxt = data.getStringExtra(NewExpenseActivity.EXPENSE_DATE_KEY);
-
-                String firstName = data.getStringExtra(EditProfileActivity.FIRST_NAME_KEY);
-                String lastName = data.getStringExtra(EditProfileActivity.LAST_NAME_KEY);
-                String email = data.getStringExtra(EditProfileActivity.EMAIL_KEY);
-                String address = data.getStringExtra(EditProfileActivity.ADDRESS_KEY);
-                String city = data.getStringExtra(EditProfileActivity.CITY_KEY);
-                String state = data.getStringExtra(EditProfileActivity.STATE_KEY);
 
                 //make expense object
                 Expense expense = new Expense(nameTxt,categoryTxt,amountTxt,dateTxt);
@@ -363,6 +380,16 @@ public class MainActivity extends AppCompatActivity
                     SharedPreferences.Editor editor = prefs.edit();
                     editor.putString("allocation", allocation).apply();
                 }
+            }
+        }
+        if(requestCode == EDIT_PROFILE_CODE) {
+            if(resultCode == RESULT_OK) {
+                firstNameIntent = data.getStringExtra(EditProfileActivity.FIRST_NAME_KEY);
+                lastNameIntent = data.getStringExtra(EditProfileActivity.LAST_NAME_KEY);
+                emailIntent = data.getStringExtra(EditProfileActivity.EMAIL_KEY);
+                addressIntent = data.getStringExtra(EditProfileActivity.ADDRESS_KEY);
+                cityIntent = data.getStringExtra(EditProfileActivity.CITY_KEY);
+                stateIntent = data.getStringExtra(EditProfileActivity.STATE_KEY);
             }
         }
         if (requestCode == SAVING_PROFILE_CODE) {

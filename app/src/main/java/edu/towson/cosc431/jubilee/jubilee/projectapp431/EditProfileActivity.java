@@ -1,5 +1,6 @@
 package edu.towson.cosc431.jubilee.jubilee.projectapp431;
 
+import edu.towson.cosc431.jubilee.jubilee.projectapp431.User;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -73,16 +74,25 @@ public class EditProfileActivity extends AppCompatActivity implements AdapterVie
                 String cityTxt = cityEt.getText().toString();
                 String stateTxt = stateSpinner.getSelectedItem().toString();
 
+                User user = new User();
+
+                user.fName = fNameTxt;
+                user.lName = lNameTxt;
+                user.email = emailTxt;
+                user.address = addressTxt;
+                user.city = cityTxt;
+                user.state = stateTxt;
+
                 //make new intent
                 Intent editProfileIntent = new Intent(getApplicationContext(),MainActivity.class);
-                editProfileIntent.putExtra(FIRST_NAME_KEY, fNameTxt);
-                editProfileIntent.putExtra(LAST_NAME_KEY, lNameTxt);
-                editProfileIntent.putExtra(EMAIL_KEY, emailTxt);
-                editProfileIntent.putExtra(ADDRESS_KEY, addressTxt);
-                editProfileIntent.putExtra(CITY_KEY, cityTxt);
-                editProfileIntent.putExtra(STATE_KEY,stateTxt);
+                editProfileIntent.putExtra(FIRST_NAME_KEY, user.fName);
+                editProfileIntent.putExtra(LAST_NAME_KEY, user.lName);
+                editProfileIntent.putExtra(EMAIL_KEY, user.email);
+                editProfileIntent.putExtra(ADDRESS_KEY, user.address);
+                editProfileIntent.putExtra(CITY_KEY, user.city);
+                editProfileIntent.putExtra(STATE_KEY, user.state);
 
-             //   setResult(RESULT_OK,editProfileIntent);
+                setResult(RESULT_OK,editProfileIntent);
                 finish();
             }
         });
