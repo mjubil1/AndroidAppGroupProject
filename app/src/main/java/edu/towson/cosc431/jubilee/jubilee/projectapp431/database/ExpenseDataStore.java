@@ -147,7 +147,7 @@ public class ExpenseDataStore implements IDataStore {
         return sum;
     }
 
-    // Creates a ContentValue object from the properties of the Song object
+    // Creates a ContentValue object from the properties of the Expense object
     private ContentValues intoContentValues(Expense expense) {
         ContentValues cv = new ContentValues();
         cv.put(DatabaseContract._ID, expense.getId());
