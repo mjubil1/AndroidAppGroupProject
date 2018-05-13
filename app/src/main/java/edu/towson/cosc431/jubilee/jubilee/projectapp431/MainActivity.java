@@ -1,6 +1,7 @@
 package edu.towson.cosc431.jubilee.jubilee.projectapp431;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
@@ -10,8 +11,10 @@ import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.InputType;
 import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
@@ -22,6 +25,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -46,6 +50,7 @@ public class MainActivity extends AppCompatActivity
     ExpenseDataStore dataStore;
     String allocation;
     Double dailyAlloc;
+    Double userLimitInput;
 
     Intent intent;
 
@@ -111,16 +116,79 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
+        //let user set their own spending limit
         if (id == R.id.action_settings) {
+            final AlertDialog.Builder dialog = new AlertDialog.Builder(MainActivity.this);
+            dialog.setTitle("Set Spending Limit");
+            dialog.setMessage("This will override any calculated spending allocations and you may " +
+                    "not reach your savings goals. Do you want to continue?");
+
+            //user agrees to enter limit
+            dialog.setPositiveButton("YES", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    //create another dialog with editText
+                    AlertDialog.Builder limit = new AlertDialog.Builder(MainActivity.this);
+                    limit.setTitle("Enter Your Spending Limit");
+                    final EditText input = new EditText(limit.getContext());
+                    input.setInputType(InputType.TYPE_CLASS_NUMBER);
+                    limit.setView(input);
+
+                    //accept user input
+                    limit.setPositiveButton("SAVE", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            userLimitInput = Double.parseDouble(input.getText().toString());
+
+                            //subtract today's expenses if needed
+                            String dateFormat = "MM/dd/yyyy";
+                            SimpleDateFormat simpleDateFormat = new SimpleDateFormat(dateFormat, Locale.US);
+                            String today = simpleDateFormat.format(Calendar.getInstance().getTime());
+                            userLimitInput -= dataStore.sumTodayExpenses(today);
+
+                            //notify if remaining allocation drops below zero
+                            if (userLimitInput < 0) {
+                                Toast.makeText(MainActivity.this, "You've exceeded your daily spending limit!",
+                                        Toast.LENGTH_LONG).show();
+                                //put intentService showNotification() here!!!!!
+                            }
+
+                            //set user spending limit to textView
+                            allocation = "$ " + String.format("%.2f", userLimitInput);
+                            allocationTv.setText(allocation);
+
+                            SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(MainActivity.this);
+                            SharedPreferences.Editor editor = prefs.edit();
+                            editor.putString("allocation", allocation).apply();
+
+                            dialogInterface.dismiss();
+                        }
+                    });
+
+                    //cancel user input
+                    limit.setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            dialogInterface.cancel();
+                        }
+                    });
+                    limit.show();
+                    dialogInterface.dismiss();
+                }
+            });
+
+            //user chooses not to enter their own limit
+            dialog.setNegativeButton("NO", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    dialogInterface.cancel();
+                }
+            });
+            dialog.show();
             return true;
         }
-
         return super.onOptionsItemSelected(item);
     }
 
