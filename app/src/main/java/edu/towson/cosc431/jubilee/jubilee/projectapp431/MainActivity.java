@@ -3,6 +3,7 @@ package edu.towson.cosc431.jubilee.jubilee.projectapp431;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.preference.PreferenceManager;
@@ -140,7 +141,7 @@ public class MainActivity extends AppCompatActivity
                 startActivity(intent);
                 break;
             case R.id.nav_savingsProfile:
-                Intent intent = new Intent(getApplicationContext(), SavingsProfile.class);
+                intent = new Intent(getApplicationContext(), SavingsProfile.class);
                 startActivityForResult(intent, SAVING_PROFILE_CODE);
                 drawer.closeDrawer(GravityCompat.START);
                 break;
@@ -148,18 +149,12 @@ public class MainActivity extends AppCompatActivity
                 intent = new Intent(MainActivity.this, ProfileSettingsActivity.class);
                 startActivity(intent);
                 break;
+            case R.id.nav_linkCard:
+                Intent intent = new Intent(Intent.ACTION_VIEW);
+                intent.setData(Uri.parse("https://play.google.com/store/search?q=google%20pay&c=apps&hl=en"));
+                startActivity(intent);
+                break;
         }
-
-        /*if(id == R.id.nav_userProfile) {
-
-            Fragment fragment = new Fragment();
-            FragmentTransaction ft= getSupportFragmentManager().beginTransaction();
-            ft.replace(R.id.frame,fragment,"activity_edit_profile");
-            ft.commit();
-        }
-
-        /*DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        drawer.closeDrawer(GravityCompat.START);*/
         return true;
     }
     private Bundle ExpenseReport(){
