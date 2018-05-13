@@ -26,6 +26,12 @@
         <activity
             android:name=".ProfileSettingsActivity"
             android:label="@string/title_activity_profile_settings"></activity>
+        <receiver android:name=".receivers.MyBroadcastReceiver"  android:exported="true">
+
+        </receiver>
+        <service
+            android:name=".services.MyIntentService"
+            android:exported="false" />
     </application>
 
 </manifest>
