@@ -14,7 +14,7 @@ public class Expense {
     private UUID id;
 
     public String toString(){
-        return "Expense:" + name + ", " + amount + ", " + category + ", " + dateSpent + ".";
+        return "Expense: " + name + ", $" + amount + ", " + category + ", " + dateSpent + ".";
     }
 
     public Expense(){
