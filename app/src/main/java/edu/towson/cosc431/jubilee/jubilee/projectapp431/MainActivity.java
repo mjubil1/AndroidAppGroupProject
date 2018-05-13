@@ -106,7 +106,7 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(view.getContext(), NewExpenseActivity.class);
-                startActivityForResult(intent, USER_CODE);
+                startActivityForResult(intent, ADD_EXPENSE_CODE);
             }
         });
 
