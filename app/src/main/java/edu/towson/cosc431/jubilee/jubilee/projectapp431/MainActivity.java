@@ -1,9 +1,12 @@
 package edu.towson.cosc431.jubilee.jubilee.projectapp431;
 
 import android.annotation.TargetApi;
+import android.app.Notification;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Build;
@@ -14,6 +17,9 @@ import android.support.annotation.RequiresApi;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.app.NotificationCompat;
+import android.support.v4.app.NotificationManagerCompat;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -39,6 +45,8 @@ import java.util.List;
 import java.util.Locale;
 
 import edu.towson.cosc431.jubilee.jubilee.projectapp431.database.ExpenseDataStore;
+import edu.towson.cosc431.jubilee.jubilee.projectapp431.receivers.MyBroadcastReceiver;
+import edu.towson.cosc431.jubilee.jubilee.projectapp431.services.MyIntentService;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -71,7 +79,12 @@ public class MainActivity extends AppCompatActivity
     String cityIntent;
     String addressIntent;
     String stateIntent;
-    Intent intent, myIntent;
+    Intent intent;
+    int notificationId = 100;
+    MyBroadcastReceiver receiver;
+
+
+    public static final String DAILY_LIMIT = "Daily_Limit";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -172,9 +185,12 @@ public class MainActivity extends AppCompatActivity
                             userLimitInput -= dataStore.sumTodayExpenses(today);
 
                             //notify if remaining allocation drops below zero
-                            if (userLimitInput < 0) {
+                            if (userLimitInput <= 0) {
                                 Toast.makeText(MainActivity.this, "You've exceeded your daily spending limit!",
                                         Toast.LENGTH_LONG).show();
+                                Intent myIntentService = new Intent(getApplicationContext(), MyIntentService.class);
+                                myIntentService.putExtra(DAILY_LIMIT,userLimitInput);
+                                startService(myIntentService);
                                 //put intentService showNotification() here!!!!!
                             }
 
@@ -317,7 +333,6 @@ public class MainActivity extends AppCompatActivity
                 ExpenseAdapter adapter = new ExpenseAdapter(dataStore);
                 recyclerView.setAdapter(adapter);
                 Log.d(TAG,"did I get the expense???? " + expense.toString());
-                //I did get the expense
 
                 adapter.notifyDataSetChanged();
 
@@ -331,10 +346,12 @@ public class MainActivity extends AppCompatActivity
                     dailyAlloc -= Double.parseDouble(amountTxt);
 
                     //notify if dailyAlloc drops below zero
-                    if (dailyAlloc < 0) {
+                    if (dailyAlloc <= 0) {
                         Toast.makeText(MainActivity.this, "You've exceeded your daily spending limit!",
                                 Toast.LENGTH_LONG).show();
                         //put intentService showNotification() here!!!!!!
+                        Intent myIntentService = new Intent(this, MyIntentService.class);
+                        startService(myIntentService);
                     }
 
                     //update allocationTV after new expense is added
@@ -395,4 +412,29 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+        receiver = new MyBroadcastReceiver(new MyBroadcastReceiver.IListener() {
+
+            @Override
+            public void onReceived() {
+
+            }
+        });
+        LocalBroadcastManager.getInstance(this).registerReceiver(receiver, new IntentFilter("android.intent.action.AIRPLANE_MODE_CHANGED"));
+    }
+
+    @Override
+    protected  void onStop() {
+        super.onStop();
+        Log.d(TAG,"onStop");
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(receiver);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        Log.d(TAG,"onDestroy");
+    }
 }
