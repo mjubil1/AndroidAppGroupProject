@@ -198,6 +198,10 @@ public class MainActivity extends AppCompatActivity
 
         int id = item.getItemId();
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        String dateFormat = "MM/dd/yyyy";
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(dateFormat, Locale.US);
+        String today = simpleDateFormat.format(Calendar.getInstance().getTime());
+        List<Expense> todayExpenses = new ArrayList<>();
 
         switch (id){
             case R.id.nav_editProfile:
@@ -223,11 +227,14 @@ public class MainActivity extends AppCompatActivity
                 startActivity(intent);
                 break;
             case R.id.nav_settings:
+                todayExpenses = dataStore.getTodayExpenses(today);
+                String todayString = listToString(todayExpenses);
                 intent = new Intent(Intent.ACTION_SEND);
                 intent.setType("message/rfc822");
                 intent.putExtra(Intent.EXTRA_EMAIL, new String[]{/*get user's email address*/});
                 intent.putExtra(Intent.EXTRA_SUBJECT, "Today's expenses");
-                intent.putExtra(Intent.EXTRA_TEXT, "These are your expenses from today");
+                intent.putExtra(Intent.EXTRA_TEXT, "These are your expenses from today:\n\n"
+                        + todayString);
                 try {
                     startActivity(Intent.createChooser(intent, "Send mail..."));
                 } catch (android.content.ActivityNotFoundException e) {
@@ -238,6 +245,15 @@ public class MainActivity extends AppCompatActivity
         }
         return true;
     }
+
+    private String listToString(List<Expense> todayExpenses) {
+        String list = "";
+        for (Expense expense : todayExpenses) {
+            list += expense.toString() + "\n";
+        }
+        return list;
+    }
+
     private Intent ExpenseReport(){
         intent = new Intent(MainActivity.this, ExpenseReport.class);
         List<Expense> list;
