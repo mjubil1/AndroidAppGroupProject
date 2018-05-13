@@ -2,9 +2,11 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/ProjectApp431.iml" filepath="$PROJECT_DIR$/ProjectApp431.iml" />
+      <module fileurl="file://C:\Users\Rachael\AndroidStudioProjects\group-repo\ProjectApp431.iml" filepath="C:\Users\Rachael\AndroidStudioProjects\group-repo\ProjectApp431.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/group-repo.iml" filepath="$PROJECT_DIR$/group-repo.iml" />
       <module fileurl="file://C:\Users\Montrell\Desktop\Cosc431Projects\ProjectApp431\groupproject.iml" filepath="C:\Users\Montrell\Desktop\Cosc431Projects\ProjectApp431\groupproject.iml" />
+      <module fileurl="file://C:\Users\Rachael\AndroidStudioProjects\group-repo\groupproject.iml" filepath="C:\Users\Rachael\AndroidStudioProjects\group-repo\groupproject.iml" />
     </modules>
   </component>
 </project>

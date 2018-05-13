@@ -89,7 +89,7 @@
         android:layout_marginTop="1dp"
         android:ems="10"
         android:hint="@string/emailEt"
-        android:inputType="textPersonName"
+        android:inputType="textEmailAddress"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/emailTv"
@@ -114,7 +114,7 @@
         android:layout_marginTop="1dp"
         android:ems="10"
         android:hint="@string/addressEt"
-        android:inputType="textPersonName"
+        android:inputType="textPostalAddress"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/addressTv" />
