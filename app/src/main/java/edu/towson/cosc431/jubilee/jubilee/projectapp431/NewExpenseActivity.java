@@ -78,7 +78,7 @@ public class NewExpenseActivity extends AppCompatActivity implements AdapterView
             public void onClick(View v) {
                 //get the values
                 String nameTxt = expenseNameEt.getText().toString();
-                String amountTxt = String.format("%.02f", Double.parseDouble(expenseAmountEt.getText().toString()));
+                String amountTxt = String.format("%.2f", Double.parseDouble(expenseAmountEt.getText().toString()));
                 String categoryTxt = categorySpinner.getSelectedItem().toString();
                 String dateTxt = expenseDateEt.getText().toString();
 

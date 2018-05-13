@@ -22,6 +22,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -212,18 +213,30 @@ public class MainActivity extends AppCompatActivity
                 recyclerView.setAdapter(adapter);
                 adapter.notifyDataSetChanged();
 
-                //sum today's expenses and subtract from allocation
-                String dateFormat = "MM/dd/yyyy";
-                SimpleDateFormat simpleDateFormat = new SimpleDateFormat(dateFormat, Locale.US);
-                String today = simpleDateFormat.format(Calendar.getInstance().getTime());
-                double sumToday = dataStore.sumTodayExpenses(today);
-                dailyAlloc -= sumToday;
-                allocation = "$ " + String.format("%.2f", dailyAlloc);
-                allocationTv.setText(allocation);
+                //subtract today's expenses from allocation
+                String alloc = allocationTv.getText().toString().substring(2);
+                if (alloc.contentEquals("date Savings Profile")) {
+                    Toast.makeText(MainActivity.this, "Please update savings profile!",
+                            Toast.LENGTH_LONG).show();
+                } else {
+                    dailyAlloc = Double.parseDouble(alloc);
+                    dailyAlloc -= Double.parseDouble(amountTxt);
 
-                SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-                SharedPreferences.Editor editor = prefs.edit();
-                editor.putString("allocation", allocation).apply();
+                    //notify if dailyAlloc drops below zero
+                    if (dailyAlloc < 0) {
+                        Toast.makeText(MainActivity.this, "You've exceeded your daily spending limit!",
+                                Toast.LENGTH_LONG).show();
+                        //put intentService showNotification() here!!!!!!
+                    }
+
+                    //update allocationTV after new expense is added
+                    allocation = "$ " + String.format("%.2f", dailyAlloc);
+                    allocationTv.setText(allocation);
+
+                    SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+                    SharedPreferences.Editor editor = prefs.edit();
+                    editor.putString("allocation", allocation).apply();
+                }
             }
         }
         if (requestCode == SAVING_PROFILE_CODE) {
@@ -245,13 +258,17 @@ public class MainActivity extends AppCompatActivity
                 String today = simpleDateFormat.format(Calendar.getInstance().getTime());
                 dailyAlloc -= dataStore.sumTodayExpenses(today);
 
+                //notify if dailyAlloc drops below zero
+                if (dailyAlloc < 0) {
+                    Toast.makeText(MainActivity.this, "You've exceeded your daily spending limit!",
+                            Toast.LENGTH_LONG).show();
+                    //put intentService showNotification() here!!!!!
+                }
+
                 //set daily alloc to textView
                 allocationTv = findViewById(R.id.allocationTv);
                 allocation = "$ " + String.format("%.2f", dailyAlloc);
                 allocationTv.setText(allocation);
-
-                //subtract today's expenses if savings goals are edited
-
 
                 SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
                 SharedPreferences.Editor editor = prefs.edit();
