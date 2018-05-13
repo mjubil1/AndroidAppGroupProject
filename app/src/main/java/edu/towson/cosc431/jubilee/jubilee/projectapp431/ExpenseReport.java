@@ -4,6 +4,7 @@ import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,7 +30,7 @@ import java.util.Date;
 
  * to handle interaction events.
  */
-public class ExpenseReport extends Fragment implements View.OnClickListener{
+public class ExpenseReport extends AppCompatActivity implements View.OnClickListener{
 
 
     private boolean permonth, peryear, perweek;
@@ -43,12 +44,13 @@ public class ExpenseReport extends Fragment implements View.OnClickListener{
 
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        View view=inflater.inflate(R.layout.expensereportlayout, container, false);
-        weekly=view.findViewById(R.id.ExpenseWeekly);
-        yearly=view.findViewById(R.id.ExpenseAnnual);
-        monthly=view.findViewById(R.id.ExpenseMonthly);
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.expensereportlayout);
+
+        weekly= findViewById(R.id.ExpenseWeekly);
+        yearly= findViewById(R.id.ExpenseAnnual);
+        monthly= findViewById(R.id.ExpenseMonthly);
         weekly.setOnClickListener(this);
         monthly.setOnClickListener(this);
         yearly.setOnClickListener(this);
@@ -60,13 +62,13 @@ public class ExpenseReport extends Fragment implements View.OnClickListener{
         monthly.setChecked(false);
         //menu.findViewById(R.id.ExpenseBacktohomescreen);
         // menu.setOnClickListener(this);
-        et[6]=view.findViewById(R.id.ExpenseEditText6);
-        et[5]=view.findViewById(R.id.ExpenseEditText5);
-        et[4]=view.findViewById(R.id.ExpenseEditText4);
-        et[3]=view.findViewById(R.id.ExpenseEditText3);
-        et[2]=view.findViewById(R.id.ExpenseEditText2);
-        et[1]=view.findViewById(R.id.ExpenseEditText1);
-        et[0]=view.findViewById(R.id.ExpenseEditText);
+        et[6]= findViewById(R.id.ExpenseEditText6);
+        et[5]= findViewById(R.id.ExpenseEditText5);
+        et[4]= findViewById(R.id.ExpenseEditText4);
+        et[3]= findViewById(R.id.ExpenseEditText3);
+        et[2]= findViewById(R.id.ExpenseEditText2);
+        et[1]= findViewById(R.id.ExpenseEditText1);
+        et[0]= findViewById(R.id.ExpenseEditText);
         et[0].setClickable(false);
         et[0].setVisibility(View.INVISIBLE);
         et[1].setClickable(false);
@@ -81,22 +83,25 @@ public class ExpenseReport extends Fragment implements View.OnClickListener{
         et[5].setVisibility(View.INVISIBLE);
         et[6].setClickable(false);
         et[6].setVisibility(View.INVISIBLE);
-data=savedInstanceState;
+
+
 
         //et[0].isInEditMode(); is it editable?
         calculate();
 
-        return view;
     }
-Bundle data;
+
 
     private ArrayList<Expense> next(ArrayList<Expense> exp){
         //find next category
+        Log.d("category found!!", exp.get(0).toString());
         String cat="";
         ArrayList<String> categoriesused=new ArrayList<String>();
         for(int x=0;x<exp.size();x++){
-            for(int y=0;y<categoriesused.size();y++){ if(!categoriesused.get(y).equals(exp.get(x).getCategory())){
+            for(int y=0;y<categoriesused.size();y++){
+                if(!categoriesused.get(y).equals(exp.get(x).getCategory())){
                 cat= exp.get(x).getCategory();
+
             }
             }
         }
@@ -123,6 +128,14 @@ Bundle data;
         while(z){
             //finds all items for that category
             ArrayList<Expense> cat=next(exp);
+
+
+            for(int M=0;M<cat.size();M++) {
+                Log.d("items in categories found", cat.get(M).toString());
+            }
+
+
+
             tvusing+=1;
 
             if(cat.isEmpty()==true||tvusing>=7){
@@ -220,44 +233,31 @@ Bundle data;
             calculate();
         } else {
             Intent intent1 = new Intent();
-           //should return to main
+           finish();
         }
     }
 
 
 
-
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-
-
-
-
-    }
     //needs to somehow return arraylist of current expenses
     private ArrayList<Expense> converttoexpense(){
 
-
-        ArrayList<String> category=data.getStringArrayList("category");
-        ArrayList<String> name=data.getStringArrayList("name");
-        ArrayList<String> amount=data.getStringArrayList("amount");
-        ArrayList<String> date=data.getStringArrayList("date");
+        Intent intent=getIntent();
+        ArrayList<String> category=intent.getStringArrayListExtra("category");
+        ArrayList<String> name=intent.getStringArrayListExtra("name");
+        ArrayList<String> amount=intent.getStringArrayListExtra("amount");
+        ArrayList<String> date=intent.getStringArrayListExtra("date");
         ArrayList <Expense> exp=new ArrayList<Expense>();
-        int expenses=data.getInt("expenses",0);
+        int expenses=intent.getIntExtra("expenses",0);
         for(int x=0;x<expenses;x++){
             //String name, String category, String amount, String dateSpent
             Expense e=new Expense(name.get(x),category.get(x),amount.get(x),date.get(x));
+
             exp.add(e);
         }
         return exp;
 
       }
 
-    @Override
-    public void onDetach() {
-        super.onDetach();
-
-    }
 
 }

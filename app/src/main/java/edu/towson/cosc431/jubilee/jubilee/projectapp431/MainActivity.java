@@ -1,11 +1,23 @@
 package edu.towson.cosc431.jubilee.jubilee.projectapp431;
 
+import android.annotation.TargetApi;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Parcelable;
+import android.preference.PreferenceManager;
+import android.support.annotation.RequiresApi;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.InputType;
 import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
@@ -16,9 +28,15 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.EditText;
+import android.widget.TextView;
+import android.widget.Toast;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
+import java.util.Locale;
 
 import edu.towson.cosc431.jubilee.jubilee.projectapp431.database.ExpenseDataStore;
 
@@ -28,9 +46,15 @@ public class MainActivity extends AppCompatActivity
     private static final String TAG = MainActivity.class.getName();
 
     private static final int USER_CODE = 100;
+    private static final int ADD_EXPENSE_CODE = 100;
+    private static final int SAVING_PROFILE_CODE = 200;
     private RecyclerView recyclerView;
+    private TextView allocationTv;
     ArrayList<Expense> expenseList;
     ExpenseDataStore dataStore;
+    String allocation;
+    Double dailyAlloc;
+    Double userLimitInput;
 
     Intent intent;
 
@@ -40,7 +64,14 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
         Log.d(TAG,"OnCreate");
+
+        allocationTv = (TextView) findViewById(R.id.allocationTv);
+
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        allocation = prefs.getString("allocation", "Update Savings Profile");
+        allocationTv.setText(allocation);
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -91,16 +122,81 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
+        //let user set their own spending limit
         if (id == R.id.action_settings) {
+            final AlertDialog.Builder dialog = new AlertDialog.Builder(MainActivity.this);
+            dialog.setTitle("Set Spending Limit");
+            dialog.setMessage("This will override any calculated spending allocations and you may " +
+                    "not reach your savings goals. Do you want to continue?");
+
+            //user agrees to enter limit
+            dialog.setPositiveButton("YES", new DialogInterface.OnClickListener() {
+                @RequiresApi(api = Build.VERSION_CODES.CUPCAKE)
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    //create another dialog with editText
+                    AlertDialog.Builder limit = new AlertDialog.Builder(MainActivity.this);
+                    limit.setTitle("Enter Your Spending Limit");
+                    final EditText input = new EditText(limit.getContext());
+                    input.setInputType(InputType.TYPE_CLASS_NUMBER);
+                    limit.setView(input);
+
+                    //accept user input
+                    limit.setPositiveButton("SAVE", new DialogInterface.OnClickListener() {
+                        @TargetApi(Build.VERSION_CODES.GINGERBREAD)
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            userLimitInput = Double.parseDouble(input.getText().toString());
+
+                            //subtract today's expenses if needed
+                            String dateFormat = "MM/dd/yyyy";
+                            SimpleDateFormat simpleDateFormat = new SimpleDateFormat(dateFormat, Locale.US);
+                            String today = simpleDateFormat.format(Calendar.getInstance().getTime());
+                            userLimitInput -= dataStore.sumTodayExpenses(today);
+
+                            //notify if remaining allocation drops below zero
+                            if (userLimitInput < 0) {
+                                Toast.makeText(MainActivity.this, "You've exceeded your daily spending limit!",
+                                        Toast.LENGTH_LONG).show();
+                                //put intentService showNotification() here!!!!!
+                            }
+
+                            //set user spending limit to textView
+                            allocation = "$ " + String.format("%.2f", userLimitInput);
+                            allocationTv.setText(allocation);
+
+                            SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(MainActivity.this);
+                            SharedPreferences.Editor editor = prefs.edit();
+                            editor.putString("allocation", allocation).apply();
+
+                            dialogInterface.dismiss();
+                        }
+                    });
+
+                    //cancel user input
+                    limit.setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            dialogInterface.cancel();
+                        }
+                    });
+                    limit.show();
+                    dialogInterface.dismiss();
+                }
+            });
+
+            //user chooses not to enter their own limit
+            dialog.setNegativeButton("NO", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    dialogInterface.cancel();
+                }
+            });
+            dialog.show();
             return true;
         }
-
         return super.onOptionsItemSelected(item);
     }
 
@@ -109,57 +205,43 @@ public class MainActivity extends AppCompatActivity
     public boolean onNavigationItemSelected(MenuItem item) {
 
         int id = item.getItemId();
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
 
         switch (id){
-            case R.id.nav_userProfile:
+            case R.id.nav_editProfile:
                 intent = new Intent(MainActivity.this, EditProfileActivity.class);
                 startActivityForResult(intent,USER_CODE);
                 break;
             case R.id.nav_expenseReport:
-                ExpenseReport er=new ExpenseReport();
-                er.setArguments(ExpenseReport());
-
-                FragmentTransaction trans=getSupportFragmentManager().beginTransaction();
-                trans.replace(R.id.container, er);
-                trans.addToBackStack(null);
-                trans.commit();
-                //setContentView(R.layout.expensereportlayout);
-                break;
-            case R.id.nav_savingsProfile:
-                intent = new Intent(MainActivity.this, SavingsProfile.class);
+                intent=ExpenseReport();
                 startActivity(intent);
                 break;
-            case R.id.nav_home:
-                setContentView(R.layout.activity_main);
+            case R.id.nav_savingsProfile:
+                intent = new Intent(getApplicationContext(), SavingsProfile.class);
+                startActivityForResult(intent, SAVING_PROFILE_CODE);
+                drawer.closeDrawer(GravityCompat.START);
                 break;
-            case R.id.nav_settings:
+            case R.id.nav_userProfile:
                 intent = new Intent(MainActivity.this, ProfileSettingsActivity.class);
                 startActivityForResult(intent,USER_CODE);
                 break;
+            case R.id.nav_linkCard:
+                Intent intent = new Intent(Intent.ACTION_VIEW);
+                intent.setData(Uri.parse("https://play.google.com/store/search?q=google%20pay&c=apps&hl=en"));
+                startActivity(intent);
+                break;
         }
-
-        /*if(id == R.id.nav_userProfile) {
-
-            Fragment fragment = new Fragment();
-            FragmentTransaction ft= getSupportFragmentManager().beginTransaction();
-            ft.replace(R.id.frame,fragment,"activity_edit_profile");
-            ft.commit();
-        }
-
-        /*DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        drawer.closeDrawer(GravityCompat.START);*/
         return true;
     }
-    private Bundle ExpenseReport(){
+    private Intent ExpenseReport(){
+        intent = new Intent(MainActivity.this, ExpenseReport.class);
         List<Expense> list;
-        try {
+
             list = dataStore.getExpenses();
-        }
-        catch(Exception e){
-            list=new ArrayList<Expense>();
-            list.add(new Expense("hello", "Fries", "7.00", "09-25"));
-        }
-        Bundle bun=new Bundle();
+
+
+
+
         int expenses=list.size();
         ArrayList<String> category=new ArrayList<String>();
         ArrayList<String>  amount=new ArrayList<String>();
@@ -173,15 +255,16 @@ public class MainActivity extends AppCompatActivity
             category.add(x,list.get(x).getCategory());
         }
 
-        bun.putStringArrayList("date",date);
-        bun.putStringArrayList("name",name);
-        bun.putStringArrayList("amount",amount);
-        bun.putStringArrayList("category",category);
-        bun.putInt("expenses", expenses);
-        return bun;
+        intent.putStringArrayListExtra("date",date);
+        intent.putStringArrayListExtra("name",name);
+        intent.putStringArrayListExtra("amount",amount);
+        intent.putStringArrayListExtra("category",category);
+        intent.putExtra("expenses", expenses);
+        return intent;
 
     }
 
+    @TargetApi(Build.VERSION_CODES.GINGERBREAD)
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data)
     {
@@ -192,7 +275,7 @@ public class MainActivity extends AppCompatActivity
             if (resultCode == RESULT_OK){
                 //handle expense
                 String nameTxt = data.getStringExtra(NewExpenseActivity.EXPENSE_NAME_KEY);
-                String amountTxt = "$" + data.getStringExtra(NewExpenseActivity.EXPENSE_AMOUNT_KEY);
+                String amountTxt = data.getStringExtra(NewExpenseActivity.EXPENSE_AMOUNT_KEY);
                 String categoryTxt = data.getStringExtra(NewExpenseActivity.EXPENSE_CATEGORY_KEY);
                 String dateTxt = data.getStringExtra(NewExpenseActivity.EXPENSE_DATE_KEY);
 
@@ -213,7 +296,71 @@ public class MainActivity extends AppCompatActivity
                 recyclerView.setAdapter(adapter);
                 Log.d(TAG,"did I get the expense???? " + expense.toString());
                 //I did get the expense
+
+                adapter.notifyDataSetChanged();
+
+                //subtract today's expenses from allocation
+                String alloc = allocationTv.getText().toString().substring(2);
+                if (alloc.contentEquals("date Savings Profile")) {
+                    Toast.makeText(MainActivity.this, "Please update savings profile!",
+                            Toast.LENGTH_LONG).show();
+                } else {
+                    dailyAlloc = Double.parseDouble(alloc);
+                    dailyAlloc -= Double.parseDouble(amountTxt);
+
+                    //notify if dailyAlloc drops below zero
+                    if (dailyAlloc < 0) {
+                        Toast.makeText(MainActivity.this, "You've exceeded your daily spending limit!",
+                                Toast.LENGTH_LONG).show();
+                        //put intentService showNotification() here!!!!!!
+                    }
+
+                    //update allocationTV after new expense is added
+                    allocation = "$ " + String.format("%.2f", dailyAlloc);
+                    allocationTv.setText(allocation);
+
+                    SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+                    SharedPreferences.Editor editor = prefs.edit();
+                    editor.putString("allocation", allocation).apply();
+                }
+            }
+        }
+        if (requestCode == SAVING_PROFILE_CODE) {
+            if (resultCode == RESULT_OK){
+                //get data from intent
+                Double savingsGoal = Double.parseDouble(data.getStringExtra(SavingsProfile.SAVING_GOAL_KEY));
+                Double income = Double.parseDouble(data.getStringExtra(SavingsProfile.INCOME_KEY));
+                Double bills = Double.parseDouble(data.getStringExtra(SavingsProfile.BILLS_KEY));
+
+                //calculate daily allocation
+                Double availableMoney = income - bills - savingsGoal;
+                Calendar cal = Calendar.getInstance();
+                int totalDays = cal.getActualMaximum(Calendar.DAY_OF_MONTH);
+                dailyAlloc = availableMoney/totalDays;
+
+                //subtract today's expenses if savings goals are edited
+                String dateFormat = "MM/dd/yyyy";
+                SimpleDateFormat simpleDateFormat = new SimpleDateFormat(dateFormat, Locale.US);
+                String today = simpleDateFormat.format(Calendar.getInstance().getTime());
+                dailyAlloc -= dataStore.sumTodayExpenses(today);
+
+                //notify if dailyAlloc drops below zero
+                if (dailyAlloc < 0) {
+                    Toast.makeText(MainActivity.this, "You've exceeded your daily spending limit!",
+                            Toast.LENGTH_LONG).show();
+                    //put intentService showNotification() here!!!!!
+                }
+
+                //set daily alloc to textView
+                allocationTv = findViewById(R.id.allocationTv);
+                allocation = "$ " + String.format("%.2f", dailyAlloc);
+                allocationTv.setText(allocation);
+
+                SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+                SharedPreferences.Editor editor = prefs.edit();
+                editor.putString("allocation", allocation).apply();
             }
         }
     }
+
 }

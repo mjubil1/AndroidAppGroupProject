@@ -26,6 +26,6 @@ public class ExpenseViewHolder extends RecyclerView.ViewHolder{
     public void bindExpenseToView(Expense expense) {
         this.expense = expense;
         expenseNameTv.setText(expense.getName());
-        expenseAmountTv.setText(expense.getAmount());
+        expenseAmountTv.setText("$" + expense.getAmount());
     }
 }

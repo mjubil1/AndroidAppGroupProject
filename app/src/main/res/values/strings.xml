@@ -16,7 +16,7 @@
     <string name="cityEt">Towson</string>
     <string name="stateTv">State</string>
     <string name="updateBtn">Update</string>
-    <string name="action_settings">Settings</string>
+    <string name="action_settings">Set Spending Limit</string>
     <string name="add_new_expense">Add New Expense</string>
     <string name="expense_name">Expense Name:</string>
     <string name="name">Name</string>
@@ -65,7 +65,7 @@
         <item>Montana</item>
         <item>Nebraska</item>
         <item>Nevada</item>
-        <item>New Hampsire</item>
+        <item>New Hampshire</item>
         <item>New Jersey</item>
         <item>New Mexico</item>
         <item>New York</item>

@@ -131,6 +131,22 @@ public class ExpenseDataStore implements IDataStore {
         return todayExpenses;
     }
 
+    public Double sumTodayExpenses(String today) {
+        SQLiteDatabase db = this.helper.getReadableDatabase();
+        Cursor cursor = db.rawQuery("select * from " + DatabaseContract.TABLE_NAME + " where " +
+                DatabaseContract.DELETED_COLUMN + " = 0", null);
+        Double sum = 0.0;
+        while (cursor.moveToNext()) {
+            String date = cursor.getString(cursor.getColumnIndex(DatabaseContract.DATE_COLUMN));
+
+            if (date.equals(today)) {
+                Double amount  = Double.parseDouble(cursor.getString(cursor.getColumnIndex(DatabaseContract.SPENT_COLUMN)));
+                sum += amount;
+            }
+        }
+        return sum;
+    }
+
     // Creates a ContentValue object from the properties of the Song object
     private ContentValues intoContentValues(Expense expense) {
         ContentValues cv = new ContentValues();

@@ -22,6 +22,7 @@
         <activity android:name=".EditProfileActivity" />
         <activity android:name=".NewExpenseActivity" />
         <activity android:name=".SavingsProfile" />
+        <activity android:name=".ExpenseReport"/>
         <activity
             android:name=".ProfileSettingsActivity"
             android:label="@string/title_activity_profile_settings"></activity>
