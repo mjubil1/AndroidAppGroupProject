@@ -63,7 +63,7 @@
         android:layout_marginTop="1dp"
         android:ems="10"
         android:hint="@string/last_nameEt"
-        android:inputType="numberDecimal"
+        android:inputType="textPersonName"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintStart_toStartOf="parent"

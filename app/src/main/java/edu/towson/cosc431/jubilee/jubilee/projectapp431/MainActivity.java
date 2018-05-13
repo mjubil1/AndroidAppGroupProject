@@ -27,7 +27,7 @@ public class MainActivity extends AppCompatActivity
 
     private static final String TAG = MainActivity.class.getName();
 
-    private static final int ADD_EXPENSE_CODE = 100;
+    private static final int USER_CODE = 100;
     private RecyclerView recyclerView;
     ArrayList<Expense> expenseList;
     ExpenseDataStore dataStore;
@@ -40,13 +40,14 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        Log.d(TAG,"OnCreate");
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(view.getContext(), NewExpenseActivity.class);
-                startActivityForResult(intent, ADD_EXPENSE_CODE);
+                startActivityForResult(intent, USER_CODE);
             }
         });
 
@@ -112,7 +113,7 @@ public class MainActivity extends AppCompatActivity
         switch (id){
             case R.id.nav_userProfile:
                 intent = new Intent(MainActivity.this, EditProfileActivity.class);
-                startActivity(intent);
+                startActivityForResult(intent,USER_CODE);
                 break;
             case R.id.nav_expenseReport:
                 ExpenseReport er=new ExpenseReport();
@@ -133,7 +134,7 @@ public class MainActivity extends AppCompatActivity
                 break;
             case R.id.nav_settings:
                 intent = new Intent(MainActivity.this, ProfileSettingsActivity.class);
-                startActivity(intent);
+                startActivityForResult(intent,USER_CODE);
                 break;
         }
 
@@ -180,15 +181,27 @@ public class MainActivity extends AppCompatActivity
         return bun;
 
     }
-    protected void onActivityResult(int requestCode, int resultCode, Intent data){
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data)
+    {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == ADD_EXPENSE_CODE){
+        Log.d(TAG,"In activity result");
+
+        if (requestCode == USER_CODE){
             if (resultCode == RESULT_OK){
                 //handle expense
                 String nameTxt = data.getStringExtra(NewExpenseActivity.EXPENSE_NAME_KEY);
                 String amountTxt = "$" + data.getStringExtra(NewExpenseActivity.EXPENSE_AMOUNT_KEY);
                 String categoryTxt = data.getStringExtra(NewExpenseActivity.EXPENSE_CATEGORY_KEY);
                 String dateTxt = data.getStringExtra(NewExpenseActivity.EXPENSE_DATE_KEY);
+
+                String firstName = data.getStringExtra(EditProfileActivity.FIRST_NAME_KEY);
+                String lastName = data.getStringExtra(EditProfileActivity.LAST_NAME_KEY);
+                String email = data.getStringExtra(EditProfileActivity.EMAIL_KEY);
+                String address = data.getStringExtra(EditProfileActivity.ADDRESS_KEY);
+                String city = data.getStringExtra(EditProfileActivity.CITY_KEY);
+                String state = data.getStringExtra(EditProfileActivity.STATE_KEY);
 
                 //make expense object
                 Expense expense = new Expense(nameTxt,categoryTxt,amountTxt,dateTxt);
@@ -200,10 +213,6 @@ public class MainActivity extends AppCompatActivity
                 recyclerView.setAdapter(adapter);
                 Log.d(TAG,"did I get the expense???? " + expense.toString());
                 //I did get the expense
-
-                adapter.notifyDataSetChanged();
-
-
             }
         }
     }

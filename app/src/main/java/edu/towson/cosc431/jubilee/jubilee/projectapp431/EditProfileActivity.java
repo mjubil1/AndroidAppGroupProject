@@ -29,8 +29,7 @@ public class EditProfileActivity extends AppCompatActivity implements AdapterVie
     public static final String EMAIL_KEY = "EMAIL";
     public static final String ADDRESS_KEY = "ADDRESS";
     public static final String CITY_KEY = "CITY";
-
-    int requestCode = 0;
+    public static final String STATE_KEY = "STATE";
 
     //Widgets
     EditText firstNameEt;
@@ -46,7 +45,6 @@ public class EditProfileActivity extends AppCompatActivity implements AdapterVie
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_profile);
         Log.d(TAG,"onCreate");
-
 
         firstNameEt = findViewById(R.id.firstNameEt);
         lastNameEt = findViewById(R.id.lastNameEt);
@@ -70,9 +68,10 @@ public class EditProfileActivity extends AppCompatActivity implements AdapterVie
                 //get the values
                 String fNameTxt = firstNameEt.getText().toString();
                 String lNameTxt = lastNameEt.getText().toString();
-                String emailTxt = stateSpinner.getSelectedItem().toString();
+                String emailTxt = emailEt.getText().toString();
                 String addressTxt = addressEt.getText().toString();
                 String cityTxt = cityEt.getText().toString();
+                String stateTxt = stateSpinner.getSelectedItem().toString();
 
                 //make new intent
                 Intent editProfileIntent = new Intent(getApplicationContext(),MainActivity.class);
@@ -81,8 +80,10 @@ public class EditProfileActivity extends AppCompatActivity implements AdapterVie
                 editProfileIntent.putExtra(EMAIL_KEY, emailTxt);
                 editProfileIntent.putExtra(ADDRESS_KEY, addressTxt);
                 editProfileIntent.putExtra(CITY_KEY, cityTxt);
+                editProfileIntent.putExtra(STATE_KEY,stateTxt);
 
-                startActivity(editProfileIntent);
+             //   setResult(RESULT_OK,editProfileIntent);
+                finish();
             }
         });
     }
