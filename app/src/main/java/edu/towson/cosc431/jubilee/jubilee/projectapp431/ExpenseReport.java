@@ -4,6 +4,7 @@ import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -82,21 +83,25 @@ public class ExpenseReport extends AppCompatActivity implements View.OnClickList
         et[5].setVisibility(View.INVISIBLE);
         et[6].setClickable(false);
         et[6].setVisibility(View.INVISIBLE);
-data=savedInstanceState;
+
+
 
         //et[0].isInEditMode(); is it editable?
         calculate();
 
     }
-Bundle data;
+
 
     private ArrayList<Expense> next(ArrayList<Expense> exp){
         //find next category
+        Log.d("category found!!", exp.get(0).toString());
         String cat="";
         ArrayList<String> categoriesused=new ArrayList<String>();
         for(int x=0;x<exp.size();x++){
-            for(int y=0;y<categoriesused.size();y++){ if(!categoriesused.get(y).equals(exp.get(x).getCategory())){
+            for(int y=0;y<categoriesused.size();y++){
+                if(!categoriesused.get(y).equals(exp.get(x).getCategory())){
                 cat= exp.get(x).getCategory();
+
             }
             }
         }
@@ -123,6 +128,14 @@ Bundle data;
         while(z){
             //finds all items for that category
             ArrayList<Expense> cat=next(exp);
+
+
+            for(int M=0;M<cat.size();M++) {
+                Log.d("items in categories found", cat.get(M).toString());
+            }
+
+
+
             tvusing+=1;
 
             if(cat.isEmpty()==true||tvusing>=7){
@@ -220,7 +233,7 @@ Bundle data;
             calculate();
         } else {
             Intent intent1 = new Intent();
-           //should return to main
+           finish();
         }
     }
 
@@ -229,16 +242,17 @@ Bundle data;
     //needs to somehow return arraylist of current expenses
     private ArrayList<Expense> converttoexpense(){
 
-
-        ArrayList<String> category=data.getStringArrayList("category");
-        ArrayList<String> name=data.getStringArrayList("name");
-        ArrayList<String> amount=data.getStringArrayList("amount");
-        ArrayList<String> date=data.getStringArrayList("date");
+        Intent intent=getIntent();
+        ArrayList<String> category=intent.getStringArrayListExtra("category");
+        ArrayList<String> name=intent.getStringArrayListExtra("name");
+        ArrayList<String> amount=intent.getStringArrayListExtra("amount");
+        ArrayList<String> date=intent.getStringArrayListExtra("date");
         ArrayList <Expense> exp=new ArrayList<Expense>();
-        int expenses=data.getInt("expenses",0);
+        int expenses=intent.getIntExtra("expenses",0);
         for(int x=0;x<expenses;x++){
             //String name, String category, String amount, String dateSpent
             Expense e=new Expense(name.get(x),category.get(x),amount.get(x),date.get(x));
+
             exp.add(e);
         }
         return exp;

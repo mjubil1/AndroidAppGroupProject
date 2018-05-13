@@ -205,7 +205,7 @@ public class MainActivity extends AppCompatActivity
                 startActivity(intent);
                 break;
             case R.id.nav_expenseReport:
-                intent = new Intent(MainActivity.this, ExpenseReport.class);
+                intent=ExpenseReport();
                 startActivity(intent);
                 break;
             case R.id.nav_savingsProfile:
@@ -225,16 +225,25 @@ public class MainActivity extends AppCompatActivity
         }
         return true;
     }
-    private Bundle ExpenseReport(){
+    private Intent ExpenseReport(){
+        intent = new Intent(MainActivity.this, ExpenseReport.class);
         List<Expense> list;
-        try {
+
             list = dataStore.getExpenses();
-        }
-        catch(Exception e){
-            list=new ArrayList<Expense>();
-            list.add(new Expense("hello", "Fries", "7.00", "09-25"));
-        }
-        Bundle bun=new Bundle();
+
+                list.add(new Expense("Farting", "Fries", "1000.00", "09-18"));
+                list.add(new Expense("Fish", "Fries", "60.00", "09-08"));
+                list.add(new Expense("Float", "Fries", "7.07", "03-18"));
+                list.add(new Expense("On", "LALA", "100.00", "05-17"));
+                list.add(new Expense("Birthdays", "LALA", "10.00", "09-26"));
+                list.add(new Expense("Like", "Basketball", "9.00", "08-25"));
+                list.add(new Expense("Every", "Basketball", "42.00", "02-14"));
+                list.add(new Expense("day", "Personal Care", "11.00", "03-03"));
+                list.add(new Expense("hello?", "Personal Care", "86.50", "04-05"));
+
+
+
+
         int expenses=list.size();
         ArrayList<String> category=new ArrayList<String>();
         ArrayList<String>  amount=new ArrayList<String>();
@@ -248,12 +257,12 @@ public class MainActivity extends AppCompatActivity
             category.add(x,list.get(x).getCategory());
         }
 
-        bun.putStringArrayList("date",date);
-        bun.putStringArrayList("name",name);
-        bun.putStringArrayList("amount",amount);
-        bun.putStringArrayList("category",category);
-        bun.putInt("expenses", expenses);
-        return bun;
+        intent.putStringArrayListExtra("date",date);
+        intent.putStringArrayListExtra("name",name);
+        intent.putStringArrayListExtra("amount",amount);
+        intent.putStringArrayListExtra("category",category);
+        intent.putExtra("expenses", expenses);
+        return intent;
 
     }
     protected void onActivityResult(int requestCode, int resultCode, Intent data){
