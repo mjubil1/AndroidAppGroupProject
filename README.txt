@@ -1,0 +1,3 @@
+README: Cosc 431 Project
+-------------------------
+This repository contains our Expense Tracker App. Once you open the app, you can navigate to different pages using the nav bar, and return to the home page using a button on each screen. This app allows the user to enter user information, enter savings goals, enter a daily spending limit, enter personal debts, and enter daily expenses as they arise. It calculates how much money a user can spand each day depending on their savings goals. It notifies the user when they exceed their daily spending limit. It allows the user to see expense reports based on the expenses that have been entered.
