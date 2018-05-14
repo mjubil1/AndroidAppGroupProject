@@ -97,7 +97,7 @@ public class NewExpenseActivity extends AppCompatActivity implements AdapterView
     }
 
     private void updateDateText() {
-        String dateFormat = "MM/dd/yyyy";
+        String dateFormat = "MM/dd/yy";
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat(dateFormat, Locale.US);
         expenseDateEt.setText(simpleDateFormat.format(calendar.getTime()));
     }

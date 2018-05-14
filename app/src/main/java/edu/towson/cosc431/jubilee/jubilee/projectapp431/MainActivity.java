@@ -302,9 +302,7 @@ public class MainActivity extends AppCompatActivity
 
     private Intent ExpenseReport(){
         intent = new Intent(MainActivity.this, ExpenseReport.class);
-        List<Expense> list;
-
-        list = dataStore.getExpenses();
+        List<Expense> list = dataStore.getExpenses();
 
         int expenses=list.size();
         ArrayList<String> category=new ArrayList<String>();
