@@ -19,7 +19,9 @@ import android.widget.TextView;
 
 import edu.towson.cosc431.jubilee.jubilee.projectapp431.R;
 import java.lang.reflect.Array;
+import java.math.RoundingMode;
 import java.text.DateFormat;
+import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -41,13 +43,13 @@ public class ExpenseReport extends AppCompatActivity implements View.OnClickList
     public ExpenseReport() {
         // Required empty public constructor
     }
-
+    RadioButton exit;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.expensereportlayout);
-        RadioButton exit=findViewById(R.id.exit);
+        exit=findViewById(R.id.exit);
         exit.setOnClickListener(this);
         weekly= findViewById(R.id.ExpenseWeekly);
         yearly= findViewById(R.id.ExpenseAnnual);
@@ -131,6 +133,15 @@ public class ExpenseReport extends AppCompatActivity implements View.OnClickList
         //converts from intent to expense
         ArrayList<Expense> exp=converttoexpense();
 
+//format : MM/DD/YY
+
+
+
+
+
+
+
+
 
 
         ArrayList<ArrayList<Expense>> categories=next(exp);
@@ -151,10 +162,16 @@ public class ExpenseReport extends AppCompatActivity implements View.OnClickList
 
             String text=categoryname+":\n";
 
+            percentage*=100;
+            int percent=(int)percentage;
+            text+="Percentage Spent: "+percent+"%"+"\n";
 
 
-            text+="Percentage Spent: "+percentage+"\n";
-            text+="Amount Spent: "+catamount;
+            NumberFormat format = NumberFormat.getInstance();
+            format.setRoundingMode(RoundingMode.DOWN);
+            format.setMaximumFractionDigits(2);
+            text+="Amount Spent: "+"$"+format.format(catamount);
+            catamount=0.0;
             et[x].setText(text);
             et[x].setVisibility(View.VISIBLE);
 
@@ -181,20 +198,23 @@ public class ExpenseReport extends AppCompatActivity implements View.OnClickList
 
         for (int x = 0; x < cat.size(); x++) {
             Expense e=cat.get(x);
-            int catmonth = Integer.parseInt(e.getDateSpent().substring(0, 2));
-            int catyear = Integer.parseInt(e.getDateSpent().substring(6, 8));
-            int catday = Integer.parseInt(e.getDateSpent().substring(3, 5));
+            try {
+                int catmonth = Integer.parseInt(e.getDateSpent().substring(0, 2));
+                int catyear = Integer.parseInt(e.getDateSpent().substring(6, 8));
+                int catday = Integer.parseInt(e.getDateSpent().substring(3, 5));
 
-            if (permonth && catmonth == month && catyear == year) {
-                time.add(cat.get(x));
-            } else if (peryear) {
-                if (year == catyear || catmonth > month && catyear == year - 1) {
+                if (permonth && catmonth == month && catyear == year) {
                     time.add(cat.get(x));
-                }
-            } else if (perweek && catyear == year) {
-                //add weeks code!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                } else if (peryear) {
+                    if (year == catyear || catmonth > month && catyear == year - 1) {
+                        time.add(cat.get(x));
+                    }
+                } else if (perweek && catyear == year) {
+                    //add weeks code!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
+                }
             }
+            catch(Exception r){}
         }
         return time;
     }
@@ -209,8 +229,8 @@ public class ExpenseReport extends AppCompatActivity implements View.OnClickList
         for(int x=0;x<cat.size();x++){
             catamount+=Double.parseDouble(cat.get(x).getAmount());
         }
-        Log.d("CatAMOUNT LOL",catamount.toString() );
-        Log.d("EXPAMOUNT LOL",expamount.toString());
+
+
         return catamount/expamount;
     }
 
@@ -244,7 +264,7 @@ public class ExpenseReport extends AppCompatActivity implements View.OnClickList
             peryear = false;
             calculate();
         } else {
-
+            exit.setChecked(false);
             finish();
         }
     }
