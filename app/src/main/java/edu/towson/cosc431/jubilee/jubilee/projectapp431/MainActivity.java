@@ -288,6 +288,11 @@ public class MainActivity extends AppCompatActivity
                 });
                 thread.start();
                 drawer.closeDrawer(GravityCompat.START);
+                break;
+            case R.id.nav_trackDebt:
+                intent = new Intent(MainActivity.this, TrackDebtActivity.class);
+                startActivity(intent);
+                break;
         }
         return true;
     }

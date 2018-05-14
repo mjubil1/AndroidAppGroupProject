@@ -42,7 +42,7 @@ public class MyIntentService extends IntentService {
         builder = new NotificationCompat.Builder(this, CHANNEL_ID);
         builder.setContentTitle("Warning User");
         builder.setContentText("You have reached your daily limit amount.");
-        builder.setSmallIcon(android.R.drawable.ic_media_play);
+        builder.setSmallIcon(android.R.drawable.ic_dialog_alert);
         builder.setVibrate(new long[]{500L, 500L, 100L, 1000L});
 
         Intent intent = new Intent(this, MainActivity.class);
