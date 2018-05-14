@@ -22,17 +22,20 @@
         <activity android:name=".EditProfileActivity" />
         <activity android:name=".NewExpenseActivity" />
         <activity android:name=".SavingsProfile" />
-        <activity android:name=".ExpenseReport"/>
-        <activity android:name=".TrackDebtActivity"/>
+        <activity android:name=".ExpenseReport" />
         <activity
             android:name=".ProfileSettingsActivity"
-            android:label="@string/title_activity_profile_settings"></activity>
-        <receiver android:name=".receivers.MyBroadcastReceiver"  android:exported="true">
+            android:label="@string/title_activity_profile_settings" />
 
-        </receiver>
+        <receiver
+            android:name=".receivers.MyBroadcastReceiver"
+            android:exported="true"></receiver>
+
         <service
             android:name=".services.MyIntentService"
             android:exported="false" />
+
+        <activity android:name=".PieChart.PietActivity"></activity>
     </application>
 
 </manifest>

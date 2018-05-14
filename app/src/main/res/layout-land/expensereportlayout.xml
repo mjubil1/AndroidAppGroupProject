@@ -6,6 +6,7 @@
     android:layout_height="match_parent"
     tools:context="edu.towson.cosc431.jubilee.jubilee.projectapp431.ExpenseReport">
 
+
     <TextView
         android:id="@+id/ExpenseReportTitle"
         android:layout_width="282dp"
@@ -106,6 +107,13 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:orientation="vertical">
+
+            <RadioButton
+                android:id="@+id/graph"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Graph" />
 
             <RadioButton
                 android:id="@+id/exit"

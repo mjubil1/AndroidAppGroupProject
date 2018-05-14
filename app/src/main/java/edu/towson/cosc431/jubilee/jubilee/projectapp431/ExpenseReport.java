@@ -4,6 +4,7 @@ import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,12 +18,17 @@ import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.TextView;
 
+
+
 import edu.towson.cosc431.jubilee.jubilee.projectapp431.R;
 import java.lang.reflect.Array;
 import java.math.RoundingMode;
 import java.text.DateFormat;
 import java.text.NumberFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -39,16 +45,17 @@ public class ExpenseReport extends AppCompatActivity implements View.OnClickList
     private RadioButton weekly, monthly, yearly;
 
     private TextView et[]=new TextView[7];
-    private Double catamount=0.0;
-    public ExpenseReport() {
-        // Required empty public constructor
-    }
-    RadioButton exit;
+    private double catamount=0.0;
+    public ExpenseReport() { }
+    private RadioButton exit, graph;
+    private ArrayList<Float> amounts;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.expensereportlayout);
+        graph=findViewById(R.id.graph);
+        graph.setOnClickListener(this);
         exit=findViewById(R.id.exit);
         exit.setOnClickListener(this);
         weekly= findViewById(R.id.ExpenseWeekly);
@@ -92,6 +99,7 @@ public class ExpenseReport extends AppCompatActivity implements View.OnClickList
         //et[0].isInEditMode(); is it editable?
         calculate();
         monthly.callOnClick();
+        graph.setVisibility(View.INVISIBLE);
     }
 
 
@@ -145,7 +153,7 @@ public class ExpenseReport extends AppCompatActivity implements View.OnClickList
 
 
         ArrayList<ArrayList<Expense>> categories=next(exp);
-
+        amounts=new ArrayList<>();
         for(int x=0;x<categories.size();x++){
             ArrayList<Expense> cat=categories.get(x);
             //finds all items for that category
@@ -171,6 +179,8 @@ public class ExpenseReport extends AppCompatActivity implements View.OnClickList
             format.setRoundingMode(RoundingMode.DOWN);
             format.setMaximumFractionDigits(2);
             text+="Amount Spent: "+"$"+format.format(catamount);
+            amounts.add((float)catamount);
+
             catamount=0.0;
             et[x].setText(text);
             et[x].setVisibility(View.VISIBLE);
@@ -183,41 +193,59 @@ public class ExpenseReport extends AppCompatActivity implements View.OnClickList
         //get date
 
         DateFormat df = new SimpleDateFormat("MM/dd/yy");
-        Date dateobj = new Date();
-        String date = df.format(dateobj);
+        Date today = new Date();
+        String date = df.format(today);
+        //disemble
         String monthdate = date.substring(0, 2);
         String daydate = date.substring(3, 5);
         String yeardate = date.substring(6, 8);
+        Integer month = Integer.parseInt(monthdate);
+        Integer year = Integer.parseInt(yeardate);
+        Integer day = Integer.parseInt(daydate);
 
+        LocalDate localtoday = LocalDate.of(year, month, day);
 
-        int month = Integer.parseInt(monthdate);
-        int year = Integer.parseInt(yeardate);
-        int day = Integer.parseInt(daydate);
+        //calculate last year
 
-        //convert to numbers
+        Date lastyear = Date.from(localtoday.minusYears(1).atStartOfDay(ZoneId.systemDefault()).toInstant());
+        //calculate last month
+
+        Date lastmonth = Date.from(localtoday.minusMonths(1).atStartOfDay(ZoneId.systemDefault()).toInstant());
+        //calculate last week
+        //
+        Date lastweek = Date.from(localtoday.minusWeeks(1).atStartOfDay(ZoneId.systemDefault()).toInstant());
+
 
         for (int x = 0; x < cat.size(); x++) {
             Expense e=cat.get(x);
+            SimpleDateFormat f = new SimpleDateFormat("MM/dd/yyyy");
+            Date d=new Date();
             try {
-                int catmonth = Integer.parseInt(e.getDateSpent().substring(0, 2));
-                int catyear = Integer.parseInt(e.getDateSpent().substring(6, 8));
-                int catday = Integer.parseInt(e.getDateSpent().substring(3, 5));
-
-                if (permonth && catmonth == month && catyear == year) {
-                    time.add(cat.get(x));
-                } else if (peryear) {
-                    if (year == catyear || catmonth > month && catyear == year - 1) {
-                        time.add(cat.get(x));
-                    }
-                } else if (perweek && catyear == year) {
-                    //add weeks code!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
-                }
+                d = f.parse(e.getDateSpent());
+            } catch (ParseException e1) {
+                e1.printStackTrace();
             }
-            catch(Exception r){}
+
+            if (permonth && !(d.before(lastmonth) || d.after(today))) {
+                time.add(cat.get(x));
+            } else if (peryear&&!(d.before(lastyear) || d.after(today))) {
+
+                time.add(cat.get(x));
+
+            } else if (perweek && !(d.before(lastweek) || d.after(today))) {
+
+                time.add(cat.get(x));
+            }
+
+
+
+
         }
         return time;
     }
+
+
+
 
     private double findpercentage( ArrayList<Expense> exp, ArrayList<Expense> cat){
         Double expamount=0.0;//amount spent
@@ -263,6 +291,16 @@ public class ExpenseReport extends AppCompatActivity implements View.OnClickList
             perweek = true;
             peryear = false;
             calculate();
+        }
+        else if(view.getId() == graph.getId()) {
+            graph.setChecked(false);
+           /* Intent intent = new Intent(this, PietActivity.class);
+            intent.putExtra("amounts", amounts.toArray());
+            startActivityForResult(intent,0);*/
+
+
+
+
         } else {
             exit.setChecked(false);
             finish();
