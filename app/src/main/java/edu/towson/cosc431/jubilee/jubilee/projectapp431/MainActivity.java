@@ -59,7 +59,6 @@ public class MainActivity extends AppCompatActivity
     public static final String ADDRESS_KEY = "ADDRESS";
     public static final String CITY_KEY = "CITY";
     public static final String STATE_KEY = "STATE";
-
     private static final int USER_CODE = 300;
     private static final int ADD_EXPENSE_CODE = 100;
     private static final int EDIT_PROFILE_CODE = 400;
@@ -72,7 +71,6 @@ public class MainActivity extends AppCompatActivity
     Double dailyAlloc;
     Double userLimitInput;
 
-
     String firstNameIntent;
     String lastNameIntent;
     String emailIntent;
@@ -82,7 +80,6 @@ public class MainActivity extends AppCompatActivity
     Intent intent;
     int notificationId = 100;
     MyBroadcastReceiver receiver;
-
 
     public static final String DAILY_LIMIT = "Daily_Limit";
 

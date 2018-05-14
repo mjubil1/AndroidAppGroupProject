@@ -134,8 +134,6 @@ public class ExpenseReport extends AppCompatActivity implements View.OnClickList
                 Log.d("items in categories found", cat.get(M).toString());
             }
 
-
-
             tvusing+=1;
 
             if(cat.isEmpty()==true||tvusing>=7){
