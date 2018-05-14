@@ -77,20 +77,24 @@ public class NewExpenseActivity extends AppCompatActivity implements AdapterView
             @Override
             public void onClick(View v) {
                 //get the values
-                String nameTxt = expenseNameEt.getText().toString();
-                String amountTxt = String.format("%.2f", Double.parseDouble(expenseAmountEt.getText().toString()));
-                String categoryTxt = categorySpinner.getSelectedItem().toString();
-                String dateTxt = expenseDateEt.getText().toString();
+                try {
+                    String nameTxt = expenseNameEt.getText().toString();
 
-                //make new intent
-                Intent expenseIntent = new Intent();
-                expenseIntent.putExtra(EXPENSE_NAME_KEY, nameTxt);
-                expenseIntent.putExtra(EXPENSE_AMOUNT_KEY, amountTxt);
-                expenseIntent.putExtra(EXPENSE_CATEGORY_KEY, categoryTxt);
-                expenseIntent.putExtra(EXPENSE_DATE_KEY, dateTxt);
+                    String amountTxt = String.format("%.2f", Double.parseDouble(expenseAmountEt.getText().toString()));
+                    String categoryTxt = categorySpinner.getSelectedItem().toString();
+                    String dateTxt = expenseDateEt.getText().toString();
 
-                //set result and finish activity
-                setResult(RESULT_OK, expenseIntent);
+                    //make new intent
+                    Intent expenseIntent = new Intent();
+                    expenseIntent.putExtra(EXPENSE_NAME_KEY, nameTxt);
+                    expenseIntent.putExtra(EXPENSE_AMOUNT_KEY, amountTxt);
+                    expenseIntent.putExtra(EXPENSE_CATEGORY_KEY, categoryTxt);
+                    expenseIntent.putExtra(EXPENSE_DATE_KEY, dateTxt);
+
+                    //set result and finish activity
+                    setResult(RESULT_OK, expenseIntent);
+                }
+                catch(Exception e){}
                 finish();
             }
         });
