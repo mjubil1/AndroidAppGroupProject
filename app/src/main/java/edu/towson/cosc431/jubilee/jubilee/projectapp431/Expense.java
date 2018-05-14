@@ -7,11 +7,11 @@ import java.util.UUID;
  */
 
 public class Expense {
-    private String name;
-    private String category;
-    private String amount;
-    private String dateSpent;
-    private UUID id;
+    public String name;
+    public String category;
+    public String amount;
+    public String dateSpent;
+    public UUID id;
 
     public String toString(){
         return "Expense: " + name + ", $" + amount + ", " + category + ", " + dateSpent + ".";
