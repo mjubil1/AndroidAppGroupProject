@@ -11,6 +11,7 @@ import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -93,9 +94,11 @@ public class NewExpenseActivity extends AppCompatActivity implements AdapterView
 
                     //set result and finish activity
                     setResult(RESULT_OK, expenseIntent);
+                    finish();
                 }
-                catch(Exception e){}
-                finish();
+                catch(Exception e){
+                    Toast.makeText(getApplicationContext(), "Please enter values!", Toast.LENGTH_LONG).show();
+                }
             }
         });
     }
