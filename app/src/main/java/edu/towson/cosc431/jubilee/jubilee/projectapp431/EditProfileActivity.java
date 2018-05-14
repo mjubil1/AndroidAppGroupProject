@@ -2,6 +2,7 @@ package edu.towson.cosc431.jubilee.jubilee.projectapp431;
 
 import edu.towson.cosc431.jubilee.jubilee.projectapp431.User;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -24,13 +25,6 @@ import android.widget.Toast;
 public class EditProfileActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
 
     private static final String TAG = EditProfileActivity.class.getName();
-
-    public static final String FIRST_NAME_KEY = "FIRST_NAME";
-    public static final String LAST_NAME_KEY = "LAST_NAME";
-    public static final String EMAIL_KEY = "EMAIL";
-    public static final String ADDRESS_KEY = "ADDRESS";
-    public static final String CITY_KEY = "CITY";
-    public static final String STATE_KEY = "STATE";
 
     //Widgets
     EditText firstNameEt;
@@ -83,17 +77,18 @@ public class EditProfileActivity extends AppCompatActivity implements AdapterVie
                 user.city = cityTxt;
                 user.state = stateTxt;
 
-                //make new intent
-                Intent editProfileIntent = new Intent(getApplicationContext(),MainActivity.class);
-                editProfileIntent.putExtra(FIRST_NAME_KEY, user.fName);
-                editProfileIntent.putExtra(LAST_NAME_KEY, user.lName);
-                editProfileIntent.putExtra(EMAIL_KEY, user.email);
-                editProfileIntent.putExtra(ADDRESS_KEY, user.address);
-                editProfileIntent.putExtra(CITY_KEY, user.city);
-                editProfileIntent.putExtra(STATE_KEY, user.state);
+                SharedPreferences preferences = getSharedPreferences("User", MODE_PRIVATE);
+                SharedPreferences.Editor editor = preferences.edit();
+                editor.putString("fName", user.fName);
+                editor.putString("lName", user.lName);
+                editor.putString("email", user.email);
+                editor.putString("address", user.address);
+                editor.putString("city", user.city);
+                editor.putString("state", user.state);
+                editor.apply();
 
-                setResult(RESULT_OK,editProfileIntent);
-                finish();
+                Intent intent = new Intent(EditProfileActivity.this, MainActivity.class);
+                startActivity(intent);
             }
         });
     }

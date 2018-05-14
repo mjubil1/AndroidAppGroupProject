@@ -1,6 +1,7 @@
 package edu.towson.cosc431.jubilee.jubilee.projectapp431;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -14,7 +15,6 @@ import android.widget.TextView;
 public class ProfileSettingsActivity extends AppCompatActivity {
 
     private static final String TAG = ProfileSettingsActivity.class.getName();
-    private static final int PROFILE_SETTINGS_CODE = 500;
 
     TextView fNameTv;
     TextView lNameTv;
@@ -40,12 +40,13 @@ public class ProfileSettingsActivity extends AppCompatActivity {
         stateTv = findViewById(R.id.state);
         goHomeBtn = findViewById(R.id.goHomeBtn);
 
-        String firstName = getIntent().getStringExtra(EditProfileActivity.FIRST_NAME_KEY);
-        String lastName = getIntent().getStringExtra(EditProfileActivity.LAST_NAME_KEY);
-        String email = getIntent().getStringExtra(EditProfileActivity.EMAIL_KEY);
-        String address = getIntent().getStringExtra(EditProfileActivity.ADDRESS_KEY);
-        String city = getIntent().getStringExtra(EditProfileActivity.CITY_KEY);
-        String state = getIntent().getStringExtra(EditProfileActivity.STATE_KEY);
+        SharedPreferences preferences = getSharedPreferences("User", MODE_PRIVATE);
+        String firstName = preferences.getString("fName", "");
+        String lastName = preferences.getString("lName", "");
+        String email = preferences.getString("email", "");
+        String address = preferences.getString("address", "");
+        String city = preferences.getString("city", "");
+        String state = preferences.getString("state", "");
 
         fNameTv.setText(firstName);
         lNameTv.setText(lastName);

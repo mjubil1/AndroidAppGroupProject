@@ -1,9 +1,6 @@
 package edu.towson.cosc431.jubilee.jubilee.projectapp431;
 
 import android.annotation.TargetApi;
-import android.app.Notification;
-import android.app.PendingIntent;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -11,14 +8,9 @@ import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.preference.PreferenceManager;
 import android.support.annotation.RequiresApi;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
-import android.support.v4.app.NotificationCompat;
-import android.support.v4.app.NotificationManagerCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
@@ -53,32 +45,16 @@ public class MainActivity extends AppCompatActivity
 
     private static final String TAG = MainActivity.class.getName();
 
-    public static final String FIRST_NAME_KEY = "FIRST_NAME";
-    public static final String LAST_NAME_KEY = "LAST_NAME";
-    public static final String EMAIL_KEY = "EMAIL";
-    public static final String ADDRESS_KEY = "ADDRESS";
-    public static final String CITY_KEY = "CITY";
-    public static final String STATE_KEY = "STATE";
-    private static final int USER_CODE = 300;
     private static final int ADD_EXPENSE_CODE = 100;
-    private static final int EDIT_PROFILE_CODE = 400;
     private static final int SAVING_PROFILE_CODE = 200;
     private RecyclerView recyclerView;
     private TextView allocationTv;
-    ArrayList<Expense> expenseList;
     ExpenseDataStore dataStore;
     String allocation;
     Double dailyAlloc;
     Double userLimitInput;
-
-    String firstNameIntent;
-    String lastNameIntent;
-    String emailIntent;
-    String cityIntent;
-    String addressIntent;
-    String stateIntent;
+    String email;
     Intent intent;
-    int notificationId = 100;
     MyBroadcastReceiver receiver;
 
     public static final String DAILY_LIMIT = "Daily_Limit";
@@ -97,6 +73,8 @@ public class MainActivity extends AppCompatActivity
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         allocation = prefs.getString("allocation", "Update Savings Profile");
         allocationTv.setText(allocation);
+        SharedPreferences preferences = getSharedPreferences("User", MODE_PRIVATE);
+        email = preferences.getString("email", "");
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -242,7 +220,7 @@ public class MainActivity extends AppCompatActivity
         switch (id){
             case R.id.nav_editProfile:
                 intent = new Intent(MainActivity.this, EditProfileActivity.class);
-                startActivityForResult(intent,EDIT_PROFILE_CODE);
+                startActivity(intent);
                 break;
             case R.id.nav_expenseReport:
                 intent=ExpenseReport();
@@ -254,7 +232,8 @@ public class MainActivity extends AppCompatActivity
                 drawer.closeDrawer(GravityCompat.START);
                 break;
             case R.id.nav_setting:
-                startActivity(profileIntent());
+                intent = new Intent(MainActivity.this, ProfileSettingsActivity.class);
+                startActivity(intent);
                 break;
             case R.id.nav_linkCard:
                 intent = new Intent(Intent.ACTION_VIEW);
@@ -264,14 +243,14 @@ public class MainActivity extends AppCompatActivity
             case R.id.nav_settings:
                 todayExpenses = dataStore.getTodayExpenses(today);
                 final String todayString = listToString(todayExpenses);
+
                 Thread thread = new Thread(new Runnable() {
                     @Override
                     public void run() {
                         try {
-
                             intent = new Intent(Intent.ACTION_SEND);
                             intent.setType("message/rfc822");
-                            intent.putExtra(Intent.EXTRA_EMAIL, new String[]{/*get user's email address*/});
+                            intent.putExtra(Intent.EXTRA_EMAIL, new String[]{email});
                             intent.putExtra(Intent.EXTRA_SUBJECT, "Today's expenses");
                             intent.putExtra(Intent.EXTRA_TEXT, "These are your expenses from today:\n\n"
                                     + todayString);
@@ -331,19 +310,6 @@ public class MainActivity extends AppCompatActivity
 
     }
 
-    private Intent profileIntent() {
-        Intent i = new Intent(MainActivity.this,ProfileSettingsActivity.class);
-
-        i.putExtra(FIRST_NAME_KEY,firstNameIntent);
-        i.putExtra(LAST_NAME_KEY,lastNameIntent);
-        i.putExtra(EMAIL_KEY,emailIntent);
-        i.putExtra(CITY_KEY,cityIntent);
-        i.putExtra(ADDRESS_KEY,addressIntent);
-        i.putExtra(STATE_KEY,stateIntent);
-
-        return i;
-    }
-
     @TargetApi(Build.VERSION_CODES.GINGERBREAD)
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data)
@@ -397,16 +363,6 @@ public class MainActivity extends AppCompatActivity
                     SharedPreferences.Editor editor = prefs.edit();
                     editor.putString("allocation", allocation).apply();
                 }
-            }
-        }
-        if(requestCode == EDIT_PROFILE_CODE) {
-            if(resultCode == RESULT_OK) {
-                firstNameIntent = data.getStringExtra(EditProfileActivity.FIRST_NAME_KEY);
-                lastNameIntent = data.getStringExtra(EditProfileActivity.LAST_NAME_KEY);
-                emailIntent = data.getStringExtra(EditProfileActivity.EMAIL_KEY);
-                addressIntent = data.getStringExtra(EditProfileActivity.ADDRESS_KEY);
-                cityIntent = data.getStringExtra(EditProfileActivity.CITY_KEY);
-                stateIntent = data.getStringExtra(EditProfileActivity.STATE_KEY);
             }
         }
         if (requestCode == SAVING_PROFILE_CODE) {
