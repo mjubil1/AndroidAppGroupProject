@@ -95,4 +95,8 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="title_activity_profile_settings">ProfileSettingsActivity</string>
     <string name="goHomeBtn">Home</string>
+    <string name="home_page">Home Page</string>
+    <string name="today_s_remaining_budget">Today\'s Remaining Budget:</string>
+    <string name="today_s_expenses">Today\'s Expenses:</string>
+    <string name="edit_savings_profile">Edit Savings Profile</string>
 </resources>
