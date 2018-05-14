@@ -34,6 +34,13 @@
         app:layout_constraintTop_toBottomOf="@+id/ExpenseReportTitle">
 
         <RadioButton
+            android:id="@+id/exit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Exit" />
+
+        <RadioButton
             android:id="@+id/ExpenseAnnual"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

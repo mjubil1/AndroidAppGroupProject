@@ -38,7 +38,6 @@ public class ExpenseReport extends AppCompatActivity implements View.OnClickList
 
     private TextView et[]=new TextView[7];
     private Double catamount=0.0;
-    private int tvusing = 0;
     public ExpenseReport() {
         // Required empty public constructor
     }
@@ -48,7 +47,8 @@ public class ExpenseReport extends AppCompatActivity implements View.OnClickList
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.expensereportlayout);
-
+        RadioButton exit=findViewById(R.id.exit);
+        exit.setOnClickListener(this);
         weekly= findViewById(R.id.ExpenseWeekly);
         yearly= findViewById(R.id.ExpenseAnnual);
         monthly= findViewById(R.id.ExpenseMonthly);
@@ -131,17 +131,7 @@ public class ExpenseReport extends AppCompatActivity implements View.OnClickList
         //converts from intent to expense
         ArrayList<Expense> exp=converttoexpense();
 
-//test
-        exp.add(new Expense("Farting", "Fries", "1000.00", "09/18/15"));
-        exp.add(new Expense("Fish", "Fries", "60.00", "09/08/11"));
-        exp.add(new Expense("Float", "Fries", "7.07", "03/04/18"));
-        exp.add(new Expense("On", "LALA", "100.00", "05/09/17"));
-        exp.add(new Expense("Birthdays", "LALA", "10.00", "09/26/14"));
-        exp.add(new Expense("Like", "Basketball", "9.00", "08/25/17"));
-        exp.add(new Expense("Every", "Basketball", "42.00", "05/10/18"));
-        exp.add(new Expense("day", "Personal Care", "11.00", "12/03/17"));
-        exp.add(new Expense("hello?", "Personal Care", "86.50", "04/04/16"));
-//
+
 
         ArrayList<ArrayList<Expense>> categories=next(exp);
 
@@ -150,7 +140,9 @@ public class ExpenseReport extends AppCompatActivity implements View.OnClickList
             //finds all items for that category
 
             String categoryname=cat.get(0).getCategory();
-            tvusing+=1;
+
+
+
             //find specific time frame
             cat=narrowtospecifictime(cat);
 
@@ -158,6 +150,8 @@ public class ExpenseReport extends AppCompatActivity implements View.OnClickList
             double percentage=findpercentage(exp, cat);
 
             String text=categoryname+":\n";
+
+
 
             text+="Percentage Spent: "+percentage+"\n";
             text+="Amount Spent: "+catamount;
@@ -177,6 +171,7 @@ public class ExpenseReport extends AppCompatActivity implements View.OnClickList
         String monthdate = date.substring(0, 2);
         String daydate = date.substring(3, 5);
         String yeardate = date.substring(6, 8);
+
 
         int month = Integer.parseInt(monthdate);
         int year = Integer.parseInt(yeardate);
@@ -249,10 +244,12 @@ public class ExpenseReport extends AppCompatActivity implements View.OnClickList
             peryear = false;
             calculate();
         } else {
-            Intent intent1 = new Intent();
+
             finish();
         }
     }
+
+
 
     //needs to somehow return arraylist of current expenses
     private ArrayList<Expense> converttoexpense(){
@@ -271,5 +268,8 @@ public class ExpenseReport extends AppCompatActivity implements View.OnClickList
             exp.add(e);
         }
         return exp;
+
     }
+
+
 }
